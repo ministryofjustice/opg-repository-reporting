@@ -1,6 +1,5 @@
 pandas
 PyGithub
-tabulate
 argparse
 python-dateutil
 pprintpp
