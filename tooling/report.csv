@@ -1,5 +1,0 @@
-Repository,Tool,Category,Locations
-opg-lpa-api,phpunit,makefile,Makefile
-opg-lpa-api,phpunit,pipeline,Jenkinsfile
-opg-lpa-api,phpunit,ide,"module/Application/tests/phpunit-coverage.xml
-module/Application/tests/phpunit.xml"
