@@ -1,31 +1,31 @@
 
-from . import tool as t
+from .tool import tool
 # queries generates the code_search dict for use in
 # calling the github api
 class queries:
     tools = [
         # unit testing
         # expand for ide file
-        t.tool("phpunit",
-            t.tool.category_and_locations.append({
-                'filename': 'phpunit.xml', 'category': 'ide'
+        tool("phpunit",
+            tool.category_and_locations.append({
+                'filename': 'phpunixml', 'category': 'ide'
             })
         ),
 
         # code scanning
-        t.tool("php-cs-fixer"),
-        t.tool("phpstan"),
+        tool("php-cs-fixer"),
+        tool("phpstan"),
         # expand for ide file
-        t.tool("psalm",
-            t.tool.category_and_locations.append({
+        tool("psalm",
+            tool.category_and_locations.append({
                 'filename': 'psalm.xml', 'category': 'ide'
             })
         ),
-        t.tool("flake8"),
+        tool("flake8"),
 
         # test runners
-        t.tool("behat"),
-        t.tool("cypress"),
+        tool("behat"),
+        tool("cypress"),
     ]
     # convert structure to a dict
     def for_api(self):
