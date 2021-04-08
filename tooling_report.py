@@ -42,7 +42,8 @@ class tooling_report(github_connection):
         out = outputer(for_output, self.dataframe_handler.save)
         # get the team repos
         print('---------------------------')
-        print('Getting team {} repos'.format(self.team_slug))
+        print('Getting team {} repos\n'.format(self.team_slug))
+        print('---------------------------')
         get_and_set_repos = self.get_and_set_team_repos
         api_runner = rate_limiter(self.g)
         api_runner.run(get_and_set_repos)
@@ -56,7 +57,7 @@ class tooling_report(github_connection):
         for repo in self.team_repos:
             found = False
             # loop over each query
-            print('============================\n{} [{}/{}]'.format(repo.name, x, total))
+            print('[{}/{}] {}'.format(x, total, repo.name))
             print(spacer+ '{0} Queries to run:'.format(length) )
             i = 1
             for q in for_api:
@@ -85,7 +86,7 @@ class tooling_report(github_connection):
             else:
                 print('\n✔ Found: '+ repo.name)
 
-            print('-----------------------\n\n')
+            print('---------------------------\n\n')
             x += 1
         #
         out.output()
@@ -111,7 +112,7 @@ def main():
                         )
     # pick the location to save the report
     parser.add_argument("--filename",
-                            default="report",
+                            default="tooling_report",
                             help="Name of the file to save results to (excluding extension)" )
 
 
