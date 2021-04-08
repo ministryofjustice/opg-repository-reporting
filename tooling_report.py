@@ -14,6 +14,7 @@ import pprint
 from tooling.search.tool import tool
 from tooling.search.queries import queries
 from tooling.search.api_code_search import api_code_search
+from tooling.convertors import for_output
 
 from github_connection.github import github_connection
 from rate_limiter.rate_limiter import rate_limiter
@@ -37,9 +38,8 @@ class tooling_report(github_connection):
 
     # main function body
     def generate(self):
-        # using dataframe -> to csv for this
-
-        out = outputer(self.dataframe_handler.convert, self.dataframe_handler.save)
+        # conversion and save
+        out = outputer(for_output, self.dataframe_handler.save)
         # get the team repos
         print('---------------------------')
         print('Getting team {} repos'.format(self.team_slug))
@@ -50,13 +50,13 @@ class tooling_report(github_connection):
         query_set = queries()
         for_api = query_set.for_api()
         length = len(for_api)
-
+        total = self.team_repos.totalCount
         # now loop over all the repos
         x = 1
         for repo in self.team_repos:
             found = False
             # loop over each query
-            print('============================\n{} [{}/{}]'.format(repo.name, x, self.team_repos.totalCount))
+            print('============================\n{} [{}/{}]'.format(repo.name, x, total))
             print(spacer+ '{0} Queries to run:'.format(length) )
             i = 1
             for q in for_api:
@@ -88,6 +88,7 @@ class tooling_report(github_connection):
             print('-----------------------\n\n')
             x += 1
         #
+        out.output()
         return
 
 

@@ -18,8 +18,8 @@ class outputer:
     def output(self):
         if len(self.data_store) > 0:
             print('>>>>> Saving dataframe')
-            convert = self.conversion_function
-            processed = convert(self.data_store)
+            convert_func = self.conversion_function
+            processed = convert_func(self.data_store)
             save = self.save_function
             save(processed)
         else:
