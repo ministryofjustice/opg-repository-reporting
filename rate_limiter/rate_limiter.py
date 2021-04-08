@@ -18,13 +18,11 @@ class rate_limiter:
 
     def reset(self):
         self.rate_limit = self.g.get_rate_limit()
-        self.remaining = self.rate_limit.search.remaining
-        print('>>>>> Api calls remaining: {}\n'.format(self.remaining))
+        self.remaining, limit = self.g.rate_limiting
         return
     # pause execution
     def pause(self):
-        search_rate_limit = self.rate_limit.search
-        reset_timestamp = calendar.timegm(search_rate_limit.reset.timetuple())
+        reset_timestamp = self.g.rate_limiting_resettime
         # add 5 seconds to be sure the rate limit has been reset
         sleep_time = reset_timestamp - calendar.timegm(time.gmtime()) + 2
         print('>>>>> Sleeping for {} seconds'.format(sleep_time) )
