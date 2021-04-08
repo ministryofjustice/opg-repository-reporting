@@ -19,6 +19,7 @@ from search.queries import queries
 from search.api_code_search import api_code_search
 from output.ouput import outputer
 from dataframe.csv import dataframe_to_csv
+from dataframe.markdown import dataframe_to_markdown
 
 pp = pprint.PrettyPrinter(indent=4)
 spacer = '      '
@@ -27,19 +28,21 @@ spacer = '      '
 
 # main class
 class tooling_report(github_connection):
+    dataframe_handler = None
 
-    def __init__(self, organization_slug, team_slug):
+    def __init__(self, organization_slug, team_slug, dataframe_handler):
         super().__init__( organization_slug=organization_slug, team_slug=team_slug )
+        self.dataframe_handler = dataframe_handler
         return
 
     # main function body
     def generate(self):
         # using dataframe -> to csv for this
-        df = dataframe_to_csv()
-        out = outputer(df.convert, df.save)
+
+        out = outputer(self.dataframe_handler.convert, self.dataframe_handler.save)
         # get the team repos
         print('---------------------------')
-        print('Getting team repos')
+        print('Getting team {} repos'.format(self.team_slug))
         get_and_set_repos = self.get_and_set_team_repos
         api_runner = rate_limiter(self.g)
         api_runner.run(get_and_set_repos)
@@ -89,7 +92,38 @@ class tooling_report(github_connection):
 
 
 def main():
-    report = tooling_report('ministryofjustice', 'opg')
+    parser = argparse.ArgumentParser(description='Generate a report of tools found within each repository owned by the team & organization.')
+
+    # github org & team
+    parser.add_argument("--organization",
+                            default="ministryofjustice",
+                            help="Set the orginisation to query against" )
+
+    parser.add_argument("--team",
+                            default="opg",
+                            help="Set the team to fetch repositories from" )
+    # determine if we output as csv or markdown from the dataframe
+    parser.add_argument("--type",
+                            default="csv",
+                            choices=["csv", "md"],
+                            help="Output as either a csv or a markdown file (default to csv)"
+                        )
+    # pick the location to save the report
+    parser.add_argument("--filename",
+                            default="report",
+                            help="Name of the file to save results to (excluding extension)" )
+
+
+    args = parser.parse_args()
+    filename = args.filename
+
+    # create the dataframe handler
+    if args.type == "csv":
+        df = dataframe_to_csv(filename)
+    else:
+        df = dataframe_to_markdown(filename)
+
+    report = tooling_report(args.organization, args.team, df)
     report.generate()
     return
 
