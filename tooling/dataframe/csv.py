@@ -3,6 +3,12 @@ import pandas as pd
 # convert and save dataframe to csv
 class dataframe_to_csv:
     filename = './report.csv'
+    ext = '.csv'
+
+    def __init__(self, filename):
+        self.filename = filename + self.ext
+        return
+
 
     def convert(self, temporary_store):
         processed_results = []
