@@ -11,12 +11,12 @@ import pandas as pd
 import argparse
 import pprint
 
+from tooling.search.tool import tool
+from tooling.search.queries import queries
+from tooling.search.api_code_search import api_code_search
 
 from github_connection.github import github_connection
 from rate_limiter.rate_limiter import rate_limiter
-from search.tool import tool
-from search.queries import queries
-from search.api_code_search import api_code_search
 from output.ouput import outputer
 from dataframe.csv import dataframe_to_csv
 from dataframe.markdown import dataframe_to_markdown
