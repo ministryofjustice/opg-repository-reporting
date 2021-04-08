@@ -8,7 +8,7 @@ class queries:
         # expand for ide file
         tool("phpunit",
             tool.category_and_locations.append({
-                'filename': 'phpunixml', 'category': 'ide'
+                'filename': 'phpunit.xml', 'category': 'ide'
             })
         ),
 
