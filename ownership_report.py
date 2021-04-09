@@ -23,10 +23,12 @@ from ownership.ownership_data import ownership_data
 # main class
 class ownership_report(github_connection):
     dataframe_handler = None
+    exclusions = None
 
-    def __init__(self, organization_slug, team_slug, dataframe_handler):
+    def __init__(self, organization_slug, team_slug, dataframe_handler, exclusions):
         super().__init__( organization_slug=organization_slug, team_slug=team_slug )
         self.dataframe_handler = dataframe_handler
+        self.exclusions = exclusions
         return
 
 
@@ -62,7 +64,7 @@ class ownership_report(github_connection):
                 'Default Branch': data.default_branch,
                 'Open Pull Requests': data.open_pull_requests.totalCount,
                 'Last Commit Date to Default': data.commit_date,
-                'Ownership': data.teams_as_string(self.team_slug)
+                'Ownership': data.teams_as_string(self.team_slug, self.exclusions)
             }
             # add to dataframe
             out.append(repo.full_name, row)
@@ -94,6 +96,9 @@ def main():
                             default="ownership_report",
                             help="Name of the file to save results to (excluding extension)" )
 
+    parser.add_argument("--exclude",
+                            default="",
+                            help="List of team names to exclude from the ownership listing.")
 
     args = parser.parse_args()
     filename = args.filename
@@ -104,7 +109,7 @@ def main():
     else:
         df = dataframe_to_markdown(filename)
 
-    report = ownership_report(args.organization, args.team, df)
+    report = ownership_report(args.organization, args.team, df, args.exclude)
     report.generate()
     return
 

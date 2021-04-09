@@ -27,10 +27,12 @@ class ownership_data:
         return True, True
     # return all the teams with access to the repo as a string
     # removing excluded
-    def teams_as_string(self, exclude):
+    def teams_as_string(self, exclude, others=''):
         teams = ''
         for t in self.teams:
-            if t.name != exclude:
+            matched = ( t.name.lower() == exclude.lower() )
+            within = ( t.name.lower() in others.lower() )
+            if  matched == False and within == False:
                 teams =  "{name}, {existing}".format(
                         name = t.name,
                         existing= teams)
