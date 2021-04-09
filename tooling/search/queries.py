@@ -11,7 +11,10 @@ class queries:
                 'filename': 'phpunit.xml', 'category': 'ide'
             })
         ),
-
+        # scan for codeql usage in .github
+        tool("codeql", [
+            {'filename': '*.yml', 'path': '.github' ,'category': 'pipeline'},
+        ]),
         # code scanning
         tool("php-cs-fixer"),
         tool("phpstan"),
