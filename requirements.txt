@@ -4,3 +4,4 @@ argparse
 python-dateutil
 pprintpp
 datetime
+tabulate
