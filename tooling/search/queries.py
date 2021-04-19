@@ -7,7 +7,7 @@ class queries:
         # unit testing
         # expand for ide file
         tool("phpunit",
-            tool.category_and_locations.append({
+            tool.category_and_locations.copy().append({
                 'filename': 'phpunit.xml', 'category': 'ide'
             })
         ),
@@ -20,7 +20,7 @@ class queries:
         tool("phpstan"),
         # expand for ide file
         tool("psalm",
-            tool.category_and_locations.append({
+            tool.category_and_locations.copy().append({
                 'filename': 'psalm.xml', 'category': 'ide'
             })
         ),
