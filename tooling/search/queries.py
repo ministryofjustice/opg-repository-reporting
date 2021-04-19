@@ -7,9 +7,9 @@ class queries:
         # unit testing
         # expand for ide file
         tool("phpunit",
-            tool.category_and_locations.copy().append({
+            tool.category_and_locations + [{
                 'filename': 'phpunit.xml', 'category': 'ide'
-            })
+            }]
         ),
         # scan for codeql usage in .github
         tool("codeql", [
@@ -20,9 +20,9 @@ class queries:
         tool("phpstan"),
         # expand for ide file
         tool("psalm",
-            tool.category_and_locations.copy().append({
+            tool.category_and_locations + [{
                 'filename': 'psalm.xml', 'category': 'ide'
-            })
+            }]
         ),
         tool("flake8"),
 
@@ -31,9 +31,9 @@ class queries:
         tool("cypress"),
         # code coverage
         tool("codecov",
-            tool.category_and_locations.copy().append({
-                'filename': 'codecov.yml', 'category': 'ide'
-            })
+            tool.category_and_locations + [{
+                'filename': 'codecov.yml', 'category': 'config'
+            }]
         )
     ]
     # convert structure to a dict
