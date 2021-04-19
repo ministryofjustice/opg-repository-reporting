@@ -42,7 +42,7 @@ class tooling_report(github_connection):
         out = outputer(for_output, self.dataframe_handler.save)
         # get the team repos
         print('---------------------------')
-        print('Getting team {} repos\n'.format(self.team_slug))
+        print('Getting team {} repos'.format(self.team_slug))
         print('---------------------------')
         get_and_set_repos = self.get_and_set_team_repos
         api_runner = rate_limiter(self.g)

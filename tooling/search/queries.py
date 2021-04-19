@@ -29,6 +29,12 @@ class queries:
         # test runners
         tool("behat"),
         tool("cypress"),
+        # code coverage
+        tool("codecov",
+            tool.category_and_locations.copy().append({
+                'filename': 'codecov.yml', 'category': 'ide'
+            })
+        )
     ]
     # convert structure to a dict
     def for_api(self):
