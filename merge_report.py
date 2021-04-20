@@ -58,17 +58,15 @@ class merge_report(github_connection):
         x = 1
         # loop over each repo and find details
         for repo in self.team_repos:
-            if repo.name == "opg-use-an-lpa":
-                print('[{}/{}] {}'.format(x, total, repo.name))
-                # create the pr class
-                pr = pull_requests(repo, self.start_date, self.end_date)
-                # run via the limiter, with grouping running after
-                api_runner.run(pr.get, out.output)
-
-                api_runner.run(pr.group, out.output)
-                # add the results
-                out.append(repo.name, pr.structure)
-                print('---------------------------')
+            print('[{}/{}] {}'.format(x, total, repo.name))
+            # create the pr class
+            pr = pull_requests(repo, self.start_date, self.end_date)
+            # run via the limiter, with grouping running after
+            api_runner.run(pr.get, out.output)
+            api_runner.run(pr.group, out.output)
+            # add the results
+            out.append(repo.name, pr.structure)
+            print('---------------------------')
             x += 1
         #
         out.output()
