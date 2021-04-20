@@ -35,8 +35,8 @@ class rate_limiter:
             try:
                 # if we have calls remaining, run the function
                 if self.remaining > 0:
-                    # returns a tripple of a boolean for complete,
-                    # bool for status and a counter for number of calls made
+                    # returns boolean for complete, and result
+                    # of the func
                     complete, function_result = function()
                     # update the rate limit
                     r, limit = self.g.rate_limiting
