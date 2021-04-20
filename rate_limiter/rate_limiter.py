@@ -23,9 +23,10 @@ class rate_limiter:
     # pause execution
     def pause(self):
         reset_timestamp = self.g.rate_limiting_resettime
+        date = datetime.datetime.fromtimestamp(reset_timestamp)
         # add 5 seconds to be sure the rate limit has been reset
-        sleep_time = reset_timestamp - calendar.timegm(time.gmtime()) + 2
-        print('>>>>> Sleeping for {} seconds'.format(sleep_time) )
+        sleep_time = reset_timestamp - calendar.timegm(time.gmtime()) + 1
+        print('>>>>> Sleeping for {} seconds until {}'.format(sleep_time, date.strftime("%Y-%m-%d %H:%M") ) )
         time.sleep(sleep_time)
 
     # run
