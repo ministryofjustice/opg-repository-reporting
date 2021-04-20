@@ -25,11 +25,11 @@ class queries:
             }]
         ),
         tool("flake8"),
-
         # test runners
         tool("behat"),
         tool("cypress"),
         # code coverage
+        tool("coveralls"),
         tool("codecov",
             tool.category_and_locations + [{
                 'filename': 'codecov.yml', 'category': 'config'
