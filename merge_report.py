@@ -19,8 +19,8 @@ from output.ouput import outputer
 from dataframe.csv import dataframe_to_csv
 from dataframe.markdown import dataframe_to_markdown
 
-from releases.convertors import for_output
-from releases.pull_requests import pull_requests
+from mergers.convertors import for_output
+from mergers.pull_requests import pull_requests
 
 pp = pprint.PrettyPrinter(indent=4)
 spacer = '      '
