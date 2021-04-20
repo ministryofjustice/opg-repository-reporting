@@ -28,7 +28,6 @@ class queries:
         # test runners
         tool("behat"),
         tool("cypress"),
-        #
         tool("pa11y"),
         # code coverage
         tool("coveralls"),
@@ -36,7 +35,11 @@ class queries:
             tool.category_and_locations + [{
                 'filename': 'codecov.yml', 'category': 'config'
             }]
-        )
+        ),
+        # meta files
+        tool("contributing", [
+            {'filename': 'CONTRIBUTING.md', 'category': 'meta'},
+        ]),
     ]
     # convert structure to a dict
     def for_api(self):
