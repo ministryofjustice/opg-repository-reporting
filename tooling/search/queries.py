@@ -28,6 +28,8 @@ class queries:
         # test runners
         tool("behat"),
         tool("cypress"),
+        #
+        tool("pa11y"),
         # code coverage
         tool("coveralls"),
         tool("codecov",
