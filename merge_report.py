@@ -109,6 +109,9 @@ def main():
                             default=now,
                             help="Set the end date for this report (default: {})".format(now.strftime("%Y-%m-%d")) )
 
+    parser.add_argument("--exclude",
+                            default="",
+                            help="Ignored.")
 
 
     args = parser.parse_args()
