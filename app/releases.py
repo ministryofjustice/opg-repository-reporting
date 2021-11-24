@@ -7,9 +7,11 @@ from shared.github_extensions.init import init
 from shared.github_extensions.pull_requests import pull_requests_in_date_counters
 from shared.github_extensions.rate_limiter import rate_limiter
 from shared.logger.out import out
+from shared.folder import timestamp_directory
 from releases import get_args
 
 def main():
+    path = timestamp_directory("releases")
     args = get_args()
 
     out.log(f"Releases between [{args.start}] and [{args.end}]")
@@ -38,7 +40,7 @@ def main():
         out.group_end()
 
     df = pd.DataFrame(all_releases)
-    df.to_markdown(f"{args.filename}.md", index=False)
+    df.to_markdown(f"{path}/{args.filename}.md", index=False)
 
 
 if __name__ == "__main__":

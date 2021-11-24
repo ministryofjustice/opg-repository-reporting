@@ -8,9 +8,11 @@ from shared.github_extensions.init import init
 from shared.github_extensions.rate_limiter import rate_limiter
 from shared.github_extensions.teams import teams_to_string
 from shared.logger.out import out
+from shared.folder import timestamp_directory
 from owners.args import get_args
 
 def main():
+    path = timestamp_directory("owners")
     args = get_args()
 
     out.log(f"Repository ownership and meta data")
@@ -47,7 +49,7 @@ def main():
         out.group_end()
 
     df = pd.DataFrame(all)
-    df.to_markdown(f"{args.filename}.md", index=False)
+    df.to_markdown(f"{path}/{args.filename}.md", index=False)
 
 
 if __name__ == "__main__":
