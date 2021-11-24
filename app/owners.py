@@ -50,7 +50,10 @@ def main():
 
     df = pd.DataFrame(all)
     df.to_markdown(f"{path}/{args.filename}.md", index=False)
-
+    out.group_start("Output")
+    out.log(f"Generated reports here [{path}]")
+    out.set_var("generated_report_directory", path)
+    out.group_end()
 
 if __name__ == "__main__":
     main()
