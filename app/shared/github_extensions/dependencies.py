@@ -74,7 +74,7 @@ class dependencies:
         # get all packages mapped in new format
         for edge in from_api.get('edges', []):
             node = edge.get('node', {})
-            source = node.get('blobPath', None).replace(f"/{owner}/{repository}/blob/{branch}", ".")
+            source = node.get('blobPath', None).replace(f"/{owner}/{repository.name}/blob/{branch}", ".")
             deps = node.get('dependencies', {})
             for dep in deps.get('nodes', []):
                 out.debug(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
