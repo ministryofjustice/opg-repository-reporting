@@ -80,7 +80,7 @@ class dependencies:
                 out.debug(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
                 p = {
                     'Repository': link,
-                    'Name': dep.get('packageName', None),
+                    'Package': dep.get('packageName', None),
                     'Versions': dep.get('requirements', None),
                     'Source': source,
                     'PackageManager': dep.get('packageManager', None)

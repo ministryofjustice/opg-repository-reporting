@@ -37,7 +37,7 @@ def main():
         rate_limiter.check()
 
         if '*' in filter or r.name in filter:
-            out.log("[{r.name}] matches [{joined}]")
+            out.log(f"[{r.name}] matches [{joined}]")
             d = dependencies()
             dep, s = d.get(args.organisation_slug, team, r, args.organisation_token)
             out.log(f"[{r.full_name}] Found [{len(dep)}] packages within [{len(s)}] sources")
@@ -49,6 +49,8 @@ def main():
     out.group_start("Output")
 
     out.log(f"Found [{len(all)}] packages in total.")
+
+    all = sorted(all, key=lambda p: p['Package'])
 
     df = pd.DataFrame(all)
     df.to_html(f"{path}/report.html", index=False, border=0)

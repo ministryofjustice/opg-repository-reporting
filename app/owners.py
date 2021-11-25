@@ -45,11 +45,14 @@ def main():
                 'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date,
                 'Ownership': teams_to_string(r, args.team_slug, args.exclude)
             }
+        out.log(f"Repository [{r.full_name}] archived [{r.archived}] last commit [{row.get('Last Commit Date to Default', None)}]")
         out.debug(row)
         all.append(row)
         out.group_end()
 
     out.group_start("Output")
+
+    all = sorted(all, key=lambda p: p['Repository'])
     df = pd.DataFrame(all)
     df.to_markdown(f"{path}/report.md", index=False)
     df.to_html(f"{path}/report.html", index=False, border=0)

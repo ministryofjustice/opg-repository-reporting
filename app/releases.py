@@ -41,6 +41,9 @@ def main():
         out.group_end()
 
     out.group_start("Output")
+
+    all_releases = sorted(all_releases, key=lambda p: p['Repository'])
+
     df = pd.DataFrame(all_releases)
     df.to_markdown(f"{path}/report.md", index=False)
     df.to_html(f"{path}/report.html", index=False, border=0)
