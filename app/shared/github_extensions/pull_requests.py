@@ -10,13 +10,13 @@ from shared.github_extensions.rate_limiter import rate_limiter
 def date_valid(merged_at:date, start:date, end:date):
     return (merged_at != None) and (merged_at >= start and merged_at <= end)
 
-def pull_requests(repository:Repository) -> PaginatedList:
+def pull_requests(repository:Repository, branch:str) -> PaginatedList:
     rate_limiter.check()
     return repository.get_pulls(
                         state='closed',
                         sort='merged_at',
                         direction='desc',
-                        base=repository.default_branch)
+                        base=branch)
 
 def date_struct(start:date, end:date) -> dict:
     struct = {'Repository': ""}
@@ -36,7 +36,8 @@ def pull_requests_in_date_counters(repository:Repository, start:date, end:date) 
     counters = date_struct(start, end)
     link = f"<a href='{repository.html_url}'>{repository.full_name}</a>"
     counters.update({'Repository': link})
-    prs = pull_requests(repository)
+
+    prs = pull_requests(repository, repository.default_branch)
     i = 0
     t = prs.totalCount
 

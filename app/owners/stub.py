@@ -1,6 +1,6 @@
 from datetime import datetime
 from string import Template
-
+import html
 
 def erb(report_dir:str, report_file_path:str) -> str:
     """
@@ -10,7 +10,6 @@ def erb(report_dir:str, report_file_path:str) -> str:
     f = open(report_file_path, 'r')
     report = f.read()
     f.close()
-
 
     template = Template(
         """---
@@ -34,6 +33,7 @@ This was generated via [this script](https://github.com/ministryofjustice/opg-re
 """
     )
     content = template.substitute(date=now, table=report)
+    content = html.unescape(content)
     f = open(f"{report_dir}/report.html.md.erb", 'w')
     f.write(content)
     f.close()
