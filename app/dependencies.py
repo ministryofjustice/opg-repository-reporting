@@ -7,7 +7,7 @@ from shared.github_extensions.dependencies import dependencies
 from shared.github_extensions.rate_limiter import rate_limiter
 from shared.logger.out import out
 from shared.folder import timestamp_directory
-from dependencies import get_args
+from dependencies import get_args, erb
 
 def main():
     path = timestamp_directory()
@@ -54,8 +54,11 @@ def main():
     df.to_html(f"{path}/report.html", index=False, border=0)
     df.to_markdown(f"{path}/report.md", index=False)
 
+    out.log("Generating ERB file")
+    erb(path, f"{path}/report.html")
+
     out.log(f"Generated reports here [{path}]")
-    out.set_var("generated_report_directory", path)
+    out.set_var("directory", path)
     out.group_end()
 
 if __name__ == "__main__":
