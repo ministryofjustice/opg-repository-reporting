@@ -22,12 +22,6 @@ def get_args() -> argparse.Namespace:
                             default='opg',
                             required=True)
 
-    output = parser.add_argument_group("Output options.")
-    # pick the location to save the report
-    output.add_argument("--filename",
-                            default="owners",
-                            help="Name of the file to save results to (excluding extension)" )
-
     data = parser.add_argument_group("Data options.")
     data.add_argument("--exclude",
                         default="opg-webops",
