@@ -27,16 +27,21 @@ def main():
     t = repos.totalCount
 
     all = []
+    filter = ['*'] if len(args.filter) == 0 else args.filter.replace(' ', '').split(',')
+    joined = ','.join(filter)
+    out.log(f"Filtering by [{joined}]")
+
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
         rate_limiter.check()
 
-        d = dependencies()
-        dep, s = d.get(args.organisation_slug, team, r, args.organisation_token)
-
-        out.log(f"[{r.full_name}] Found [{len(dep)}] packages within [{len(s)}] sources")
-        all.extend(dep)
+        if '*' in filter or r.name in filter:
+            out.log("[{r.name}] matches [{joined}]")
+            d = dependencies()
+            dep, s = d.get(args.organisation_slug, team, r, args.organisation_token)
+            out.log(f"[{r.full_name}] Found [{len(dep)}] packages within [{len(s)}] sources")
+            all.extend(dep)
 
         out.group_end()
 

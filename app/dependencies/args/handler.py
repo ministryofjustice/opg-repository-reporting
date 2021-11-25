@@ -22,5 +22,10 @@ def get_args() -> argparse.Namespace:
                         help='GitHub slug of the team to run against (can be a list, split by comma)',
                         required=True)
 
+    data_group = parser.add_argument_group("Data options.")
+    data_group.add_argument('--filter',
+                        help='Filter repositories by this list of names',
+                        default='*')
+
 
     return parser.parse_args()
