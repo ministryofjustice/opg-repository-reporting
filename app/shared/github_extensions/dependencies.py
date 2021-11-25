@@ -59,12 +59,14 @@ class dependencies:
         return dict( request.json() ).get('data', None).get('repository', None).get('dependencyGraphManifests')
 
 
-    def format(self, from_api:dict, owner:str, repository:str, branch:str) -> tuple:
+    def format(self, from_api:dict, owner:str, repository:Repository) -> tuple:
         """
         Convert the API returned data into source list and package list we've used historically
         """
         packages = []
         sources = []
+        branch = repository.default_branch
+        link = f"<a href='{repository.html_url}'>{repository.full_name}</a>"
         # get all the files
         for f in from_api.get('nodes', []):
             sources.append(f.get('filename', None))
@@ -78,7 +80,7 @@ class dependencies:
                 out.debug(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
                 p = {
                     'Name': dep.get('packageName', None),
-                    'Repository': repository,
+                    'Repository': link,
                     'Versions': dep.get('requirements', None),
                     'Source': source,
                     'PackageManager': dep.get('packageManager', None)
@@ -102,4 +104,4 @@ class dependencies:
         out.debug(f"[{repository.full_name}] Calling preview api [{preview_header}]")
         query = self.build_query(org, repository.name)
         from_api = self.run(query, headers)
-        return self.format(from_api, org, repository.name, repository.default_branch)
+        return self.format(from_api, org, repository)

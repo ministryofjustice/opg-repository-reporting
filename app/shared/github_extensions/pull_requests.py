@@ -34,7 +34,8 @@ def pull_requests_in_date_counters(repository:Repository, start:date, end:date) 
     """
     """
     counters = date_struct(start, end)
-    counters.update({'Repository': repository.full_name})
+    link = f"<a href='{repository.html_url}'>{repository.full_name}</a>"
+    counters.update({'Repository': link})
     prs = pull_requests(repository)
     i = 0
     t = prs.totalCount

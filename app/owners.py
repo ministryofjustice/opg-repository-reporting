@@ -36,7 +36,7 @@ def main():
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
         rate_limiter.check()
         row = {
-                'Repository': f"[{r.full_name}]({r.html_url})",
+                'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
                 'Archived?': "Yes" if r.archived else "No",
                 'Clone Traffic': r.get_clones_traffic()['count'],
                 'Fork Count': r.forks_count,
