@@ -45,11 +45,15 @@ def main():
 
         out.group_end()
 
+
+    out.group_start("Output")
+
+    out.log(f"Found [{len(all)}] packages in total.")
+
     df = pd.DataFrame(all)
     df.to_html(f"{path}/report.html", index=False, border=0)
     df.to_markdown(f"{path}/report.md", index=False)
 
-    out.group_start("Output")
     out.log(f"Generated reports here [{path}]")
     out.set_var("generated_report_directory", path)
     out.group_end()

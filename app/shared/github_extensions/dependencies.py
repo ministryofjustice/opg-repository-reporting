@@ -75,7 +75,7 @@ class dependencies:
             source = node.get('blobPath', None).replace(f"/{owner}/{repository}/blob/{branch}", ".")
             deps = node.get('dependencies', {})
             for dep in deps.get('nodes', []):
-                print(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
+                out.debug(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
                 p = {
                     'Name': dep.get('packageName', None),
                     'Repository': repository,
