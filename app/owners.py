@@ -49,7 +49,8 @@ def main():
         out.group_end()
 
     df = pd.DataFrame(all)
-    df.to_markdown(f"{path}/{args.filename}.md", index=False)
+    df.to_markdown(f"{path}/report.md", index=False)
+    df.to_html(f"{path}/report.html", index=False, border=0)
     out.group_start("Output")
     out.log(f"Generated reports here [{path}]")
     out.set_var("generated_report_directory", path)
