@@ -1,16 +1,19 @@
 from datetime import date
-import dateutil.relativedelta
 from github.PaginatedList import PaginatedList
 from github.PullRequest import PullRequest
 from github.Repository import Repository
-from shared.logger.out import out
 from shared.github_extensions.rate_limiter import rate_limiter
+from shared.logger.out import out
 
 
 def date_valid(merged_at:date, start:date, end:date):
+    """See if the merged_date is between start & end and not None """
     return (merged_at != None) and (merged_at >= start and merged_at <= end)
 
 def pull_requests(repository:Repository, branch:str) -> PaginatedList:
+    """
+    Wrapper around repository.get_pulls() to add rate limiting check
+    """
     rate_limiter.check()
     return repository.get_pulls(
                         state='closed',
@@ -18,28 +21,21 @@ def pull_requests(repository:Repository, branch:str) -> PaginatedList:
                         direction='desc',
                         base=branch)
 
-def date_struct(start:date, end:date) -> dict:
-    struct = {'Repository': ""}
-    m = start
-    out.debug(f"Creating struct for [{start}] [{end}]")
-    while start <= end:
-        key = start.strftime('%Y-%m')
-        struct[key] = 0
-        # increment the date by a month, but keep it to the 1st of the month
-        start = start + dateutil.relativedelta.relativedelta(months=1)
-        start = start.replace(day=1, hour=0, minute=0, second=0)
-    return struct
 
-def pull_requests_in_date_counters(repository:Repository, start:date, end:date) -> dict:
+
+def pull_requests_in_date_counters(
+    repository:Repository,
+    start:date,
+    end:date,
+    branch:str="main",
+    counters:dict={}) -> dict:
     """
     """
-    counters = date_struct(start, end)
-    link = f"<a href='{repository.html_url}'>{repository.full_name}</a>"
-    counters.update({'Repository': link})
 
-    prs = pull_requests(repository, repository.default_branch)
+    prs = pull_requests(repository, branch)
     i = 0
     t = prs.totalCount
+    out.log(f"[{t}] pull requests for [{repository.full_name}] onto [{branch}]")
 
     pr:PullRequest
 
@@ -47,7 +43,7 @@ def pull_requests_in_date_counters(repository:Repository, start:date, end:date) 
         i = i + 1
         rate_limiter.check()
         valid = date_valid(pr.merged_at, start, end )
-        out.log(f"[{i}/{t}] PR for [{repository.full_name}]@[{pr.merged_at}] is [{valid}]")
+        out.debug(f"[{i}/{t}] PR for [{repository.full_name}][{branch}]@[{pr.merged_at}] is [{valid}]")
         if valid:
             monthYear = pr.merged_at.strftime('%Y-%m')
             counters[monthYear] += 1

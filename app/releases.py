@@ -2,20 +2,18 @@ from pprint import pp
 import pandas as pd
 from github.MainClass import Github
 from github.Organization import Organization
+from github.Repository import Repository
 from github.Team import Team
-from shared.github_extensions.init import init
-from shared.github_extensions.pull_requests import pull_requests_in_date_counters
-from shared.github_extensions.rate_limiter import rate_limiter
-from shared.logger.out import out
-from shared.folder import timestamp_directory
-from releases import get_args
-from releases.stub import erb
+
+from shared import init, counters_for_date_range, pull_requests_in_date_counters, rate_limiter, out, timestamp_directory
+from releases import get_args, erb
 
 def main():
     path = timestamp_directory("releases")
     args = get_args()
+    filter = ['*'] if len(args.filter) == 0 else args.filter.replace(' ', '').split(',')
 
-    out.log(f"Releases between [{args.start}] and [{args.end}]")
+    out.log(f"Releases between [{args.start}] and [{args.end}] filtered by [{args.filter}]")
     g:Github
     org:Organization
     team:Team
@@ -29,15 +27,26 @@ def main():
     t = repos.totalCount
 
     all_releases = []
+    r:Repository
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
         rate_limiter.check()
+        # filter repos to make debugging easier
+        if '*' in filter or r.name in filter:
+            # get all the base branches, should give us [main, master] or [master]
+            base_branches:list = list ( set( [r.default_branch, "master"] ) )
+            releases:dict = counters_for_date_range(
+                                args.start,
+                                args.end,
+                                {'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>" } )
+            for b in base_branches:
+                out.log(f"Looking for branch merges into [{b}]")
+                releases = pull_requests_in_date_counters(r, args.start, args.end, b, releases)
 
-        releases = pull_requests_in_date_counters(r, args.start, args.end)
-        all_releases.append(releases)
-        out.debug(releases)
+            out.debug(releases)
 
+            all_releases.append(releases)
         out.group_end()
 
     out.group_start("Output")

@@ -27,6 +27,11 @@ def get_args() -> argparse.Namespace:
                             required=True)
 
     data = parser.add_argument_group("Data options.")
+
+    data.add_argument('--filter',
+                        help='Filter repositories by this list of names',
+                        default='*')
+
     # start & end date of the report
     data.add_argument("--start",
                             type=datetime.date.fromisoformat,
