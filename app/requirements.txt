@@ -9,4 +9,4 @@ requests==2.27.1
 tabulate==0.8.9
 html==1.13
 jsonschema==4.4.0
-parameterized=0.8.1
+parameterized==0.8.1
