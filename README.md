@@ -50,9 +50,9 @@ This will create a markdown file.
 
 
 
-## Dependency / Software Report
+## Software Packages Report
 
 Uses Github preview api to generate a list of all detected software dependencies within all the repositories the token is authorised to access with the team.
 
 
-```python ./dependencies.py --organisation-token ${GITHUB_TOKEN} ```
+```python ./software_packages.py --organisation-token ${GITHUB_TOKEN} ```
