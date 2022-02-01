@@ -1,13 +1,7 @@
 import pandas as pd
-from github.MainClass import Github
-from github.Organization import Organization
-from github.Team import Team
-from shared.github_extensions.init import init
-from shared.github_extensions.dependencies import dependencies
-from shared.github_extensions.rate_limiter import rate_limiter
-from shared.logger.out import out
-from shared.folder import timestamp_directory
-from dependencies import get_args, erb
+from github import Github, Organization, Team
+from shared import init, dependencies, rate_limiter, out, timestamp_directory
+from software_packages import get_args, erb
 
 def main():
     path = timestamp_directory()
@@ -15,8 +9,8 @@ def main():
 
     out.log(f"Dependency data")
     g:Github
-    org:Organization
-    team:Team
+    org:Organization.Organization
+    team:Team.Team
     g, org, team = init(args)
 
     rate_limiter.CONNECTION = g
