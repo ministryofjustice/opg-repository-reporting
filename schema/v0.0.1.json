@@ -1,0 +1,27 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/ministryofjustice/opg-repository-reporting/main/schema/v0.0.1.json",
+    "title": "Repository Metadata",
+    "description": "A collection of meta data relating to OPG repositories",
+    "type": "object",
+    "properties": {
+        "owners": {
+            "description": "List of service teams that take ownership of this repository",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "dependencies":{
+            "description": "List of repositories (internal and external) that this code base requires.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        }
+    },
+    "required": ["owners"]
+  }
