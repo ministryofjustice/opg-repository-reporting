@@ -14,7 +14,7 @@ def erb(report_dir:str, report_file_path:str) -> str:
 
     template = Template(
         """---
-title: Dependencies / Software Packages
+title: Software Packages
 last_reviewed_on: $date
 review_in: 3 months
 ---
@@ -29,7 +29,7 @@ $table
 
 ### Notes
 
-This was generated via [this script](https://github.com/ministryofjustice/opg-repository-reporting/blob/main/dependencies.py).
+This was generated via [this script](https://github.com/ministryofjustice/opg-repository-reporting/blob/main/software_packages.py).
 
 """
     )
