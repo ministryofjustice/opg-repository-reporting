@@ -12,8 +12,8 @@ def main():
 
     out.log(f"Repository meta data")
     g:Github
-    org:Organization
-    team:Team
+    org:Organization.Organization
+    team:Team.Team
     g, org, team = init(args)
 
     rate_limiter.CONNECTION = g
@@ -24,7 +24,7 @@ def main():
     t = repos.totalCount
 
     all = []
-    r:Repository
+    r:Repository.Repository
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
@@ -34,6 +34,7 @@ def main():
                 'Archived?': "Yes" if r.archived else "No",
                 'Default Branch': r.default_branch,
                 'Default Branch Protection?': "Yes" if protected_default_branch(r) else "No",
+                'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
                 'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
                 'Clone Traffic': r.get_clones_traffic()['count'],
                 'Fork Count': r.forks_count,
