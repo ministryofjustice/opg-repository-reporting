@@ -2,7 +2,7 @@ from pprint import pp
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
-from shared import init, rate_limiter, protected_default_branch, out, timestamp_directory
+from shared import init, rate_limiter, protected_default_branch, out, timestamp_directory, secrets
 from meta import get_args, erb
 
 
@@ -29,12 +29,14 @@ def main():
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
         rate_limiter.check()
+        s = secrets()
         row = {
                 'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
                 'Archived?': "Yes" if r.archived else "No",
                 'Default Branch': r.default_branch,
                 'Default Branch Protection?': "Yes" if protected_default_branch(r) else "No",
                 'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
+                'Has Secrets?': s.has_secrets(r, args.organisation_token),
                 'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
                 'Clone Traffic': r.get_clones_traffic()['count'],
                 'Fork Count': r.forks_count,
