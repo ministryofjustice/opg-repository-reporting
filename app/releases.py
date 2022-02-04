@@ -5,7 +5,7 @@ from github.Organization import Organization
 from github.Repository import Repository
 from github.Team import Team
 
-from shared import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, out, timestamp_directory
+from shared import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, Out, timestamp_directory
 from releases import get_args, erb
 
 def main():
@@ -13,7 +13,7 @@ def main():
     args = get_args()
     filter = ['*'] if len(args.filter) == 0 else args.filter.replace(' ', '').split(',')
 
-    out.log(f"Releases between [{args.start}] and [{args.end}] filtered by [{args.filter}]")
+    Out.log(f"Releases between [{args.start}] and [{args.end}] filtered by [{args.filter}]")
     g:Github
     org:Organization
     team:Team
@@ -30,7 +30,7 @@ def main():
     r:Repository
     for r in repos:
         i = i + 1
-        out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
+        Out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
         RateLimiter.check()
         # filter repos to make debugging easier
         if '*' in filter or r.name in filter:
@@ -41,15 +41,15 @@ def main():
                                 args.end,
                                 {'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>" } )
             for b in base_branches:
-                out.log(f"Looking for branch merges into [{b}]")
+                Out.log(f"Looking for branch merges into [{b}]")
                 releases = pull_requests_in_date_counters(r, args.start, args.end, releases, b)
 
-            out.debug(releases)
+            Out.debug(releases)
 
             all_releases.append(releases)
-        out.group_end()
+        Out.group_end()
 
-    out.group_start("Output")
+    Out.group_start("Output")
 
     all_releases = sorted(all_releases, key=lambda p: p['Repository'])
 
@@ -57,12 +57,12 @@ def main():
     df.to_markdown(f"{path}/report.md", index=False)
     df.to_html(f"{path}/report.html", index=False, border=0)
 
-    out.log("Generating ERB file")
+    Out.log("Generating ERB file")
     erb(path, f"{path}/report.html")
 
-    out.log(f"Generated reports here [{path}]")
-    out.set_var("directory", path)
-    out.group_end()
+    Out.log(f"Generated reports here [{path}]")
+    Out.set_var("directory", path)
+    Out.group_end()
 
 if __name__ == "__main__":
     main()

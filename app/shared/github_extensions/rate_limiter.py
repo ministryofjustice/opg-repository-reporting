@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from github import RateLimitExceededException
 import github
 from github.Rate import Rate
-from shared.logger.out import out
+from shared.logger.out import Out
 
 class RateLimiter:
     """Static class to handle github api reat limit tracking"""
@@ -21,7 +21,7 @@ class RateLimiter:
         if RateLimiter.CONNECTION is None:
             raise ValueError("CONNECTION not set")
         ratelimit = RateLimiter.CONNECTION.get_rate_limit()
-        out.debug(f"Rate limit data: [{ratelimit.core.remaining}/{ratelimit.core.limit}] reset: [{ratelimit.core.reset}]")
+        Out.debug(f"Rate limit data: [{ratelimit.core.remaining}/{ratelimit.core.limit}] reset: [{ratelimit.core.reset}]")
         RateLimiter.LIMITER = ratelimit.core
         return RateLimiter.LIMITER
 
@@ -35,7 +35,7 @@ class RateLimiter:
         date = RateLimiter.LIMITER.reset + timedelta(seconds=extend_pause_by)
         now = datetime.utcnow()
         pause_for = (date - now).total_seconds()
-        out.debug(f"Pausing execution for [{pause_for}] seconds until [{date}]")
+        Out.debug(f"Pausing execution for [{pause_for}] seconds until [{date}]")
         time.sleep(pause_for)
         return date
 

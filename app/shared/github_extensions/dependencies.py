@@ -4,7 +4,7 @@ from github.Repository import Repository
 from pprint import pp
 from string import Template
 import requests
-from shared.logger.out import out
+from shared.logger.out import Out
 
 
 class Dependencies:
@@ -17,7 +17,7 @@ class Dependencies:
         Use string tempplating to generate a graphql friendly template with
         variables substituted
         """
-        out.debug(f"[{repository}] Generating template for graphgl query")
+        Out.debug(f"[{repository}] Generating template for graphgl query")
         template = Template(
         """{
             repository(owner:"$owner", name:"$name") {
@@ -51,7 +51,7 @@ class Dependencies:
         """
         Call the graphql API endpoint
         """
-        out.debug(f"Calling api [{self.endpoint}]")
+        Out.debug(f"Calling api [{self.endpoint}]")
         request = requests.post(self.endpoint, json={'query': query}, headers=headers)
         if request.status_code != 200:
             raise Exception("Query failed to run by returning code of {}. {}".format(request.status_code, query))
@@ -77,7 +77,7 @@ class Dependencies:
             source = node.get('blobPath', None).replace(f"/{owner}/{repository.name}/blob/{branch}", ".")
             deps = node.get('dependencies', {})
             for dep in deps.get('nodes', []):
-                out.debug(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
+                Out.debug(f"[{owner}/{repository}] Package [{dep.get('packageName')}] with versions [{dep.get('requirements')}] in [{source}]")
                 p = {
                     'Repository': link,
                     'Package': dep.get('packageName', None),
@@ -102,7 +102,7 @@ class Dependencies:
             "Authorization": f"Bearer {token}",
             "Accept": preview_header
         }
-        out.debug(f"[{repository.full_name}/{team.name}] Calling preview api [{preview_header}]")
+        Out.debug(f"[{repository.full_name}/{team.name}] Calling preview api [{preview_header}]")
         query = self.build_query(org, repository.name)
         from_api = self.run(query, headers)
         return self.format(from_api, org, repository)
