@@ -3,11 +3,10 @@ from string import Template
 import html
 
 def erb(report_dir:str, report_file_path:str) -> str:
-    """
-    """
+    """ Creates a erb file using data from the report_file_path """
     now = datetime.utcnow().strftime("%Y-%m-%d")
 
-    f = open(report_file_path, 'r')
+    f = open(report_file_path, 'r', encoding='utf-8')
     report = f.read()
     f.close()
 
@@ -34,6 +33,6 @@ This was generated via [this script](https://github.com/ministryofjustice/opg-re
     )
     content = template.substitute(date=now, table=report)
     content = html.unescape(content)
-    f = open(f"{report_dir}/report.html.md.erb", 'w')
+    f = open(f"{report_dir}/report.html.md.erb", 'w', encoding='utf-8')
     f.write(content)
     f.close()
