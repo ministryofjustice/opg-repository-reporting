@@ -8,6 +8,6 @@ def teams_to_string(repository:Repository, exclude, others='') -> str:
     for t in repository.get_teams():
         matched = ( t.name.lower() == exclude.lower() )
         within = ( t.name.lower() in others.lower() )
-        if  matched == False and within == False:
+        if  matched is False and within is False:
             teams =  f"{t.name}, {teams}"
     return teams.strip(", ")
