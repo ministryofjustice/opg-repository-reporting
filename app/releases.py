@@ -1,4 +1,3 @@
-from pprint import pp
 import pandas as pd
 from github.MainClass import Github
 from github.Organization import Organization
@@ -9,6 +8,7 @@ from shared import init, counters_for_date_range, pull_requests_in_date_counters
 from releases import get_args, erb
 
 def main():
+    """Main function"""
     path = timestamp_directory("releases")
     args = get_args()
     filter = ['*'] if len(args.filter) == 0 else args.filter.replace(' ', '').split(',')

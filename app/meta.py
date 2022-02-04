@@ -1,4 +1,3 @@
-from pprint import pp
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
@@ -7,10 +6,11 @@ from meta import get_args, erb
 
 
 def main():
+    """ Main function """
     path = timestamp_directory("meta")
     args = get_args()
 
-    Out.log(f"Repository meta data")
+    Out.log("Repository meta data")
     g:Github
     org:Organization.Organization
     team:Team.Team

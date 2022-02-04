@@ -4,10 +4,11 @@ from shared import init, Dependencies, RateLimiter, Out, timestamp_directory
 from software_packages import get_args, erb
 
 def main():
+    """Main function"""
     path = timestamp_directory()
     args = get_args()
 
-    Out.log(f"Dependency data")
+    Out.log("Dependency data")
     g:Github
     org:Organization.Organization
     team:Team.Team

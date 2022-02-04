@@ -1,4 +1,3 @@
-from pprint import pp
 from github.Repository import Repository
 import pandas as pd
 from github.MainClass import Github
@@ -13,10 +12,11 @@ from owners.args import get_args
 from owners.stub import erb
 
 def main():
+    """Main function"""
     path = timestamp_directory("owners")
     args = get_args()
 
-    Out.log(f"Repository ownership and meta data")
+    Out.log("Repository ownership and meta data")
     g:Github
     org:Organization
     team:Team
