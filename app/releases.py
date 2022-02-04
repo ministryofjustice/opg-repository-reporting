@@ -42,7 +42,7 @@ def main():
                                 {'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>" } )
             for b in base_branches:
                 out.log(f"Looking for branch merges into [{b}]")
-                releases = pull_requests_in_date_counters(r, args.start, args.end, b, releases)
+                releases = pull_requests_in_date_counters(r, args.start, args.end, releases, b)
 
             out.debug(releases)
 
