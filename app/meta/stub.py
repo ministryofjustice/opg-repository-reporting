@@ -2,14 +2,13 @@ from datetime import datetime
 from string import Template
 import html
 
-def erb(report_dir:str, report_file_path:str) -> str:
-    """
-    """
+def erb(report_dir:str, report_file_path:str) -> None:
+    """ Creates a erb file using data from the report_file_path """
     now = datetime.utcnow().strftime("%Y-%m-%d")
 
-    f = open(report_file_path, 'r')
-    report = f.read()
-    f.close()
+    file_reader = open(report_file_path, 'r', encoding='utf-8')
+    report = file_reader.read()
+    file_reader.close()
 
     template = Template(
         """---
@@ -34,6 +33,6 @@ This was generated via [this script](https://github.com/ministryofjustice/opg-re
     )
     content = template.substitute(date=now, table=report)
     content = html.unescape(content)
-    f = open(f"{report_dir}/report.html.md.erb", 'w')
-    f.write(content)
-    f.close()
+    file_writer = open(f"{report_dir}/report.html.md.erb", 'w', encoding='utf-8')
+    file_writer.write(content)
+    file_writer.close()

@@ -2,7 +2,7 @@ import argparse
 
 
 def get_args() -> argparse.Namespace:
-
+    """ Return configured args namespace """
     parser = argparse.ArgumentParser(description='Generate a report of all package dependencies.')
 
     org_group = parser.add_argument_group("Orginisation details")
@@ -17,7 +17,7 @@ def get_args() -> argparse.Namespace:
 
     team_group = parser.add_argument_group("Team options.")
     team_group.add_argument('--team-slug',
-                        help='GitHub slug of the team to run against (can be a list, split by comma)',
+                        help='GitHub slug of the team to use (can be a list, split by comma)',
                         required=True)
 
     data_group = parser.add_argument_group("Data options.")
