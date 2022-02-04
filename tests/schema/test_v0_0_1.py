@@ -1,16 +1,16 @@
-from pprint import pp
 import unittest
 import pathlib
 import json
 from jsonschema import validate, ValidationError
 from parameterized import parameterized
 
-class Test_V0_0_1(unittest.TestCase):
+class TestV001(unittest.TestCase):
+    """ Test the v0.0.1 schema """
     schema:dict
 
     def setUp(self):
         filepath:str = pathlib.Path(__file__).parent.parent.parent.joinpath("./schema/v0.0.1.json").resolve()
-        file = open(filepath)
+        file = open(filepath, 'r', encoding='utf-8')
         self.schema = json.load(file)
         file.close()
 
@@ -25,8 +25,8 @@ class Test_V0_0_1(unittest.TestCase):
         """ Check that valid data correctly validates """
         try:
             validate(instance=instance, schema=self.schema)
-        except Exception as e:
-            self.fail("Failed to validate data")
+        except Exception:
+            self.fail(f"Failed to validate data {name}")
 
 
 
@@ -39,5 +39,6 @@ class Test_V0_0_1(unittest.TestCase):
     ])
     def test_schema_against_invalid_data(self, name:str, bad_instance:dict):
         """ Check a series of incorrectly formatted data will throw errors """
-        with self.assertRaises(ValidationError) as context:
+        with self.assertRaises(ValidationError):
+            print(f"validating {name}")
             validate(instance=bad_instance, schema=self.schema)
