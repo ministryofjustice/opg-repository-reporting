@@ -1,5 +1,5 @@
 import unittest
-from app import Schema
+from app.reports import Schema
 
 class TestSchema(unittest.TestCase):
     """TestSchema"""
