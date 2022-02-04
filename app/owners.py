@@ -1,68 +1,70 @@
-from github.Repository import Repository
-import pandas as pd
-from github.MainClass import Github
-from github.Organization import Organization
-from github.Team import Team
-from shared.github_extensions.init import init
-from shared.github_extensions.rate_limiter import RateLimiter
-from shared.github_extensions.teams import teams_to_string
-from shared.logger.out import Out
-from shared.folder import timestamp_directory
-from owners.args import get_args
-from owners.stub import erb
+import json
+from github import Github, Repository, Team
+from jsonschema import validate, ValidationError
+
+from reports import init, RateLimiter, Out, repositories, has_metafiles
+from reports.owners import get_args
+
+
+
 
 def main():
     """Main function"""
-    path = timestamp_directory("owners")
     args = get_args()
 
-    Out.log("Repository ownership and meta data")
+    Out.log("Repository ownership and dependency data")
+    
     g:Github
-    org:Organization
-    team:Team
-    g, org, team = init(args)
-
+    team:Team.Team
+    g, _ , team = init(args)
     RateLimiter.CONNECTION = g
-    RateLimiter.check()
 
-    repos = team.get_repos()
-    i = 0
-    t = repos.totalCount
+    all_repos, repos_with_metadata = repositories(team, has_metafiles)
 
-    all = []
-    r:Repository
-    for r in repos:
-        i = i + 1
-        Out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
-        RateLimiter.check()
-        row = {
-                'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
-                'Archived?': "Yes" if r.archived else "No",
-                'Clone Traffic': r.get_clones_traffic()['count'],
-                'Fork Count': r.forks_count,
-                'Default Branch': r.default_branch,
-                'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
-                'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date,
-                'Ownership': teams_to_string(r, args.team_slug, args.exclude)
-            }
-        Out.log(f"Repository [{r.full_name}] archived [{r.archived}] last commit [{row.get('Last Commit Date to Default', None)}]")
-        Out.debug(row)
-        all.append(row)
-        Out.group_end()
+    print(len(all_repos))
+    print(repos_with_metadata)
 
-    Out.group_start("Output")
+    # i:int = 0
+    # total:int = repos.totalCount
+    # repo:Repository.Repository
+    
+    # owners:Ownership= Ownership()
 
-    all = sorted(all, key=lambda p: p['Repository'])
-    df = pd.DataFrame(all)
-    df.to_markdown(f"{path}/report.md", index=False)
-    df.to_html(f"{path}/report.html", index=False, border=0)
+    # service_teams = []
+    # repos_used_by_teams = {}
+    # for repo in repos:
+    #     i = i + 1
+    #     if repo.full_name == "ministryofjustice/opg-lpa":
 
-    Out.log("Generating ERB file")
-    erb(path, f"{path}/report.html")
+    #         Out.group_start(f"[{i}/{total}] Repository [{repo.full_name}]")
+    #         RateLimiter.check()
+    #         try:
+    #             metadata = json.loads( repo.get_contents(meta_path).decoded_content)
+    #             schema_data = Schema(metadata)
+    #             valid = schema_data.valid()
+    #             if valid:
+    #                 owners.add(metadata)
+                    
 
-    Out.log(f"Generated reports here [{path}]")
-    Out.set_var("directory", path)
-    Out.group_end()
+                    
+    #                 # find all repos from this meta data and merge
+    #                 used = [repo.html_url] + metadata.get("dependencies", [])
+    #                 # now update the lists for all owners
+    #                 for owner in metadata.get("owners"):
+    #                     repos_used_by_teams.update({ owner: used } )
+                        
+    #                 # for dependents in metadata.get("dependencies", []):
+    #                 #     all_repos_used_by_teams.update({owner: [dependents]})
+    #             else:
+    #                 Out.log("Metadata failed schema validation!")
+                
+    #         except UnknownObjectException:
+    #             Out.log(f"No meta file for {repo.full_name}")
+
+    # print(service_teams)
+    # print(repos_used_by_teams)
+    # Out.group_start("Output")
+
 
 if __name__ == "__main__":
     main()

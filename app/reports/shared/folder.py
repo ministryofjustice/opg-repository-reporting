@@ -14,8 +14,8 @@ def timestamp_directory(report_type:str) -> str:
 
 def app_directory() -> Path:
     """ Return root application directory """
-    return Path(__file__).parent.parent.resolve()
+    return Path(__file__).parent.parent.parent.resolve()
 
 def root_directory() -> Path:
     """ Return the root of this code base """
-    return Path(__file__).parent.parent.parent.resolve()
+    return Path(__file__).parent.parent.parent.parent.resolve()
