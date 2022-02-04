@@ -23,10 +23,6 @@ def get_args() -> argparse.Namespace:
                             default='opg',
                             required=True)
 
-    data = parser.add_argument_group("Data options.")
-    data.add_argument("--exclude",
-                        default="opg-webops",
-                        help="List of team names to exclude from the ownership listing.")
 
 
     return parser.parse_args()
