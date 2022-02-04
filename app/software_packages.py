@@ -1,6 +1,6 @@
 import pandas as pd
 from github import Github, Organization, Team
-from shared import init, dependencies, RateLimiter, out, timestamp_directory
+from shared import init, Dependencies, RateLimiter, out, timestamp_directory
 from software_packages import get_args, erb
 
 def main():
@@ -32,7 +32,7 @@ def main():
 
         if '*' in filter or r.name in filter:
             out.log(f"[{r.name}] matches [{joined}]")
-            d = dependencies()
+            d = Dependencies()
             dep, s = d.get(args.organisation_slug, team, r, args.organisation_token)
             out.log(f"[{r.full_name}] Found [{len(dep)}] packages within [{len(s)}] sources")
             all.extend(dep)

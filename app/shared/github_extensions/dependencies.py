@@ -7,8 +7,8 @@ import requests
 from shared.logger.out import out
 
 
-class dependencies:
-
+class Dependencies:
+    """ Extra class to handle dependency data """
     endpoint:str = 'https://api.github.com/graphql'
 
 
@@ -96,12 +96,13 @@ class dependencies:
         token:str,
         preview_header:str = "application/vnd.github.hawkgirl-preview+json") -> tuple:
         """
+        Fetch dependency data
         """
         headers = {
             "Authorization": f"Bearer {token}",
             "Accept": preview_header
         }
-        out.debug(f"[{repository.full_name}] Calling preview api [{preview_header}]")
+        out.debug(f"[{repository.full_name}/{team.name}] Calling preview api [{preview_header}]")
         query = self.build_query(org, repository.name)
         from_api = self.run(query, headers)
         return self.format(from_api, org, repository)

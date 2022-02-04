@@ -4,6 +4,7 @@ from github.Team import Team
 from argparse import Namespace
 
 def init(args:Namespace) -> tuple:
+    """ Init some standard vars """
     g:Github = Github(args.organisation_token)
     org:Organization = g.get_organization(args.organisation_slug)
     team:Team = org.get_team_by_slug(args.team_slug)
