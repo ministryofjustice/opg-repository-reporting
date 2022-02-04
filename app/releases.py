@@ -1,7 +1,7 @@
 import pandas as pd
 from github import Github, Organization, Repository, Team
-from reports import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, Out, timestamp_directory
-from reports.releases import get_args, erb
+from packages import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, Out, timestamp_directory
+from packages.releases import get_args, erb
 
 def main():
     """Main function"""

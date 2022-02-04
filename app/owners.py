@@ -2,8 +2,8 @@ import json
 from github import Github, Repository, Team
 from jsonschema import validate, ValidationError
 
-from reports import init, RateLimiter, Out, repositories, has_metafiles
-from reports.owners import get_args
+from packages import init, RateLimiter, Out, repositories, has_metafiles
+from packages.owners import get_args
 
 
 
