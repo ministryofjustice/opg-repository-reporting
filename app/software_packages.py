@@ -5,7 +5,7 @@ from software_packages import get_args, erb
 
 def main():
     """Main function"""
-    path = timestamp_directory()
+    path = timestamp_directory("software_packages")
     args = get_args()
 
     Out.log("Dependency data")

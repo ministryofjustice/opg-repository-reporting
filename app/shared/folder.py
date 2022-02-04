@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import datetime
 import os
 
-def timestamp_directory(report_type:str = "dependencies") -> str:
+def timestamp_directory(report_type:str) -> str:
     """ Return the path to a timestamp based directory relative to the app root"""
     timestamp = datetime.utcnow().strftime('%Y-%m-%d-%H%M%S')
 
