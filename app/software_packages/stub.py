@@ -7,9 +7,9 @@ def erb(report_dir:str, report_file_path:str) -> str:
     """
     now = datetime.utcnow().strftime("%Y-%m-%d")
 
-    f = open(report_file_path, 'r')
-    report = f.read()
-    f.close()
+    file_handler = open(report_file_path, 'r')
+    report = file_handler.read()
+    file_handler.close()
 
 
     template = Template(

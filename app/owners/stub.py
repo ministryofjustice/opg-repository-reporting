@@ -6,9 +6,9 @@ def erb(report_dir:str, report_file_path:str) -> str:
     """ Generates string from template with report_file_path content used """
     now = datetime.utcnow().strftime("%Y-%m-%d")
 
-    f = open(report_file_path, 'r', encoding='utf-8')
-    report = f.read()
-    f.close()
+    file_handler = open(report_file_path, 'r', encoding='utf-8')
+    report = file_handler.read()
+    file_handler.close()
 
     template = Template(
         """---
