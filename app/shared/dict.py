@@ -1,6 +1,6 @@
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from shared.logger.out import Out
+from .logger.out import Out
 
 
 def counters_for_date_range(start:date, end:date, struct:dict) -> dict:

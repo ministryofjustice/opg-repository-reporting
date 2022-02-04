@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from github import RateLimitExceededException
 import github
 from github.Rate import Rate
-from shared.logger.out import Out
+from ..logger.out import Out
 
 class RateLimiter:
     """Static class to handle github api reat limit tracking"""

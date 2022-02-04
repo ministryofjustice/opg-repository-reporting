@@ -2,8 +2,8 @@ from datetime import date
 from github.PaginatedList import PaginatedList
 from github.PullRequest import PullRequest
 from github.Repository import Repository
-from shared.github_extensions.rate_limiter import RateLimiter
-from shared.logger.out import Out
+from .rate_limiter import RateLimiter
+from ..logger.out import Out
 
 
 def date_valid(merged_at:date, start:date, end:date):
