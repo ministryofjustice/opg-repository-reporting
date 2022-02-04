@@ -1,6 +1,6 @@
 import pandas as pd
 from github import Github, Organization, Team
-from shared import init, dependencies, rate_limiter, out, timestamp_directory
+from shared import init, dependencies, RateLimiter, out, timestamp_directory
 from software_packages import get_args, erb
 
 def main():
@@ -13,8 +13,8 @@ def main():
     team:Team.Team
     g, org, team = init(args)
 
-    rate_limiter.CONNECTION = g
-    rate_limiter.check()
+    RateLimiter.CONNECTION = g
+    RateLimiter.check()
 
     repos = team.get_repos()
     i = 0
@@ -28,7 +28,7 @@ def main():
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
-        rate_limiter.check()
+        RateLimiter.check()
 
         if '*' in filter or r.name in filter:
             out.log(f"[{r.name}] matches [{joined}]")

@@ -2,7 +2,7 @@ from datetime import date
 from github.PaginatedList import PaginatedList
 from github.PullRequest import PullRequest
 from github.Repository import Repository
-from shared.github_extensions.rate_limiter import rate_limiter
+from shared.github_extensions.rate_limiter import RateLimiter
 from shared.logger.out import out
 
 
@@ -14,7 +14,7 @@ def pull_requests(repository:Repository, branch:str) -> PaginatedList:
     """
     Wrapper around repository.get_pulls() to add rate limiting check
     """
-    rate_limiter.check()
+    RateLimiter.check()
     return repository.get_pulls(
                         state='closed',
                         sort='merged_at',
@@ -40,7 +40,7 @@ def pull_requests_in_date_counters(
 
     for pr in prs:
         i = i + 1
-        rate_limiter.check()
+        RateLimiter.check()
         valid = date_valid(pr.merged_at, start, end )
         out.debug(f"[{i}/{total}] PR for [{repository.full_name}][{branch}]@[{pr.merged_at}] is [{valid}]")
         if valid:

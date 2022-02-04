@@ -5,7 +5,7 @@ from github.Organization import Organization
 from github.Repository import Repository
 from github.Team import Team
 
-from shared import init, counters_for_date_range, pull_requests_in_date_counters, rate_limiter, out, timestamp_directory
+from shared import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, out, timestamp_directory
 from releases import get_args, erb
 
 def main():
@@ -19,8 +19,8 @@ def main():
     team:Team
     g, org, team = init(args)
 
-    rate_limiter.CONNECTION = g
-    rate_limiter.check()
+    RateLimiter.CONNECTION = g
+    RateLimiter.check()
 
     repos = team.get_repos()
     i = 0
@@ -31,7 +31,7 @@ def main():
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
-        rate_limiter.check()
+        RateLimiter.check()
         # filter repos to make debugging easier
         if '*' in filter or r.name in filter:
             # get all the base branches, should give us [main, master] or [master]

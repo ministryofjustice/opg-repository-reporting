@@ -5,7 +5,7 @@ from github.MainClass import Github
 from github.Organization import Organization
 from github.Team import Team
 from shared.github_extensions.init import init
-from shared.github_extensions.rate_limiter import rate_limiter
+from shared.github_extensions.rate_limiter import RateLimiter
 from shared.github_extensions.teams import teams_to_string
 from shared.logger.out import out
 from shared.folder import timestamp_directory
@@ -22,8 +22,8 @@ def main():
     team:Team
     g, org, team = init(args)
 
-    rate_limiter.CONNECTION = g
-    rate_limiter.check()
+    RateLimiter.CONNECTION = g
+    RateLimiter.check()
 
     repos = team.get_repos()
     i = 0
@@ -34,7 +34,7 @@ def main():
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
-        rate_limiter.check()
+        RateLimiter.check()
         row = {
                 'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
                 'Archived?': "Yes" if r.archived else "No",

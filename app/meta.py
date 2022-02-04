@@ -2,7 +2,7 @@ from pprint import pp
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
-from shared import init, rate_limiter, protected_default_branch, out, timestamp_directory
+from shared import init, RateLimiter, protected_default_branch, out, timestamp_directory
 from meta import get_args, erb
 
 
@@ -16,8 +16,8 @@ def main():
     team:Team.Team
     g, org, team = init(args)
 
-    rate_limiter.CONNECTION = g
-    rate_limiter.check()
+    RateLimiter.CONNECTION = g
+    RateLimiter.check()
 
     repos = team.get_repos()
     i = 0
@@ -28,7 +28,7 @@ def main():
     for r in repos:
         i = i + 1
         out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
-        rate_limiter.check()
+        RateLimiter.check()
         row = {
                 'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
                 'Archived?': "Yes" if r.archived else "No",
