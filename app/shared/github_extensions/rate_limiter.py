@@ -1,4 +1,3 @@
-from pprint import pp
 import time
 from datetime import datetime, timedelta
 from github import RateLimitExceededException
@@ -7,6 +6,7 @@ from github.Rate import Rate
 from shared.logger.out import out
 
 class rate_limiter:
+    """Static class to handle github api reat limit tracking"""
     # create an Rate class as we'll use this struct
     LIMITER:Rate = Rate(None, {}, {'limit':5000, 'remaining':5000}, True)
     CONNECTION:github.Github = None
