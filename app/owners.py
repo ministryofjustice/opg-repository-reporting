@@ -1,17 +1,13 @@
-import json
-from github import Github, Repository, Team
-from jsonschema import validate, ValidationError
-
-from packages import init, RateLimiter, Out, repositories, has_metafiles
+from github import Github, Team
+from packages import init, RateLimiter, Out, repositories, has_metafiles, Ownership, metadata, Schema, no_owners, service_team_repos, timestamp_directory
 from packages.owners import get_args
-
+from packages.owners import erb
 
 
 
 def main():
     """Main function"""
     args = get_args()
-
     Out.log("Repository ownership and dependency data")
     
     g:Github
@@ -19,51 +15,36 @@ def main():
     g, _ , team = init(args)
     RateLimiter.CONNECTION = g
 
-    all_repos, repos_with_metadata = repositories(team, has_metafiles)
+    # fetch all repos, but use metadata file filter to find those with and without a metadata file
+    # - those without are considered to not have an owner
+    all_repos, owned_repos, unowned_repos = repositories(team, has_metafiles)
 
-    print(len(all_repos))
-    print(repos_with_metadata)
+    report_data:Ownership = Ownership()
 
-    # i:int = 0
-    # total:int = repos.totalCount
-    # repo:Repository.Repository
+    Out.group_start("Finding repositories with valid schema")
+    for repo in owned_repos:        
+        data:dict = metadata(repo)
+        Out.log(f"[{repo.full_name}] Has metadata file")
+        if Schema.valid( data ):
+            Out.log(f"[{repo.full_name}] Has valid schema")
+            report_data.add(repo, data)
+  
+    Out.group_end()
+
+    no_owner_html:str = no_owners(unowned_repos)
+    service_teams_html:str = service_team_repos(report_data.owners, report_data.owner_repositories, report_data.owner_dependencies)
+
+    path = timestamp_directory("owners")
+    erb(path, no_owner_html, service_teams_html)
     
-    # owners:Ownership= Ownership()
+    Out.group_start("Summary")
+    Out.log(f"[{len(all_repos)}] Total repositories. [{len(owned_repos)}] Owned repositories. [{len(unowned_repos)}] Unowned repositories.")
+    Out.group_end()
 
-    # service_teams = []
-    # repos_used_by_teams = {}
-    # for repo in repos:
-    #     i = i + 1
-    #     if repo.full_name == "ministryofjustice/opg-lpa":
+    Out.log(f"Generated reports here [{path}]")
+    Out.set_var("directory", path)
+    Out.group_end()
 
-    #         Out.group_start(f"[{i}/{total}] Repository [{repo.full_name}]")
-    #         RateLimiter.check()
-    #         try:
-    #             metadata = json.loads( repo.get_contents(meta_path).decoded_content)
-    #             schema_data = Schema(metadata)
-    #             valid = schema_data.valid()
-    #             if valid:
-    #                 owners.add(metadata)
-                    
-
-                    
-    #                 # find all repos from this meta data and merge
-    #                 used = [repo.html_url] + metadata.get("dependencies", [])
-    #                 # now update the lists for all owners
-    #                 for owner in metadata.get("owners"):
-    #                     repos_used_by_teams.update({ owner: used } )
-                        
-    #                 # for dependents in metadata.get("dependencies", []):
-    #                 #     all_repos_used_by_teams.update({owner: [dependents]})
-    #             else:
-    #                 Out.log("Metadata failed schema validation!")
-                
-    #         except UnknownObjectException:
-    #             Out.log(f"No meta file for {repo.full_name}")
-
-    # print(service_teams)
-    # print(repos_used_by_teams)
-    # Out.group_start("Output")
 
 
 if __name__ == "__main__":
