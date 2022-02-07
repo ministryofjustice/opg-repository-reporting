@@ -17,7 +17,7 @@ def main():
 
     # fetch all repos, but use metadata file filter to find those with and without a metadata file
     # - those without are considered to not have an owner
-    all_repos, owned_repos, unowned_repos = repositories(team, has_metafiles)
+    all_repos, owned_repos, unowned_repos, archived_repos = repositories(team, has_metafiles)
 
     report_data:Ownership = Ownership()
 
@@ -38,7 +38,7 @@ def main():
     erb(path, no_owner_html, service_teams_html)
     
     Out.group_start("Summary")
-    Out.log(f"[{len(all_repos)}] Total repositories. [{len(owned_repos)}] Owned repositories. [{len(unowned_repos)}] Unowned repositories.")
+    Out.log(f"[{len(all_repos)}] Total repositories. [{len(owned_repos)}] Owned repositories. [{len(unowned_repos)}] Unowned repositories. [{len(archived_repos)}] Archived repositories.")
     Out.group_end()
 
     Out.log(f"Generated reports here [{path}]")
