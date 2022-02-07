@@ -1,5 +1,4 @@
 import unittest
-from faker import Faker
 from github.Repository import Repository
 from parameterized import parameterized
 from app.packages import Ownership
@@ -9,9 +8,6 @@ repo_name_prefix:str = 'ministryofjustice'
 
 class TestOwnership(unittest.TestCase):
     """TestOwnership"""
-
-    def setUp(self) -> None:
-        self.fake = Faker()
 
     @parameterized.expand([
         ("small-valid-repo-set", [
@@ -45,14 +41,6 @@ class TestOwnership(unittest.TestCase):
         report:Ownership = Ownership()
         for repo_meta in repos_with_metadata:
             report.add( repo_meta.get('repo'), repo_meta.get('metadata') )
-        
-        print(report.owners)
-        print(report.owner_repositories)
-        print(report.owner_dependencies)
-
         # number of owners and number of keys should match owner count
         self.assertEqual(owner_count, len(report.owners))
         self.assertEqual(owner_count, len(report.owner_repositories.keys()))
-
-        
-        
