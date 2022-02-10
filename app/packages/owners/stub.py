@@ -5,8 +5,8 @@ import html
 from github.Repository import Repository
 
 
-link_secondary_class:str = "govuk-button moj-button-menu__item govuk-button--secondary"
-link_primary_class:str = "govuk-button moj-button-menu__item"
+link_secondary_class:str = "opg-tag govuk-tag govuk-tag--grey opg-tag--dependent"
+link_primary_class:str = "opg-tag opg-tag--owner govuk-tag"
 
 
 def link_to_name(link:str) -> str:
@@ -17,12 +17,9 @@ def no_owners(repos:list) -> str:
     """Generate a html string for template based on list of repos based in"""
     content:str = ""
     if len(repos) > 0:
-        content = "<div class='moj-button-menu'><div class='moj-button-menu__wrapper'>"
+        repo:Repository
         for repo in repos:
-            content += f"<a href='{repo.html_url}' class='{link_secondary_class}'>{repo.full_name}</a>"
-
-        content += '</div></div>'
-
+            content += f"<a href='{repo.html_url}' class='{link_secondary_class}'>{repo.name}</a>\n"
     return content
 
 def service_team_repos(teams:list, owned:list, dependents:list) -> str:
@@ -30,15 +27,14 @@ def service_team_repos(teams:list, owned:list, dependents:list) -> str:
     content:str = ""
     
     for team in teams:
-        content += f"<div><h3>{team}</h3>" \
-                        "<div class='moj-button-menu'>" \
-                            "<div class='moj-button-menu__wrapper'>"
+        content += f"<div class='opg-team'><h3 id='{team}'>{team}</h3>" \
+                        "<div class='opg-tag-list'>" 
         for link in owned.get(team, []):
-            content += f"<a href='{link}' class='{link_primary_class}'>{link_to_name(link)}</a>"
+            content += f"<a href='{link}' title='OWNER OF {link_to_name(link)}' class='{link_primary_class}'>{link_to_name(link)}</a>"
         for link in dependents.get(team, []):
-            content += f"<a href='{link}' class='{link_secondary_class}'>{link_to_name(link)}</a>"
+            content += f"<a href='{link}' title='DEPENDS ON {link_to_name(link)}' class='{link_secondary_class}'>{link_to_name(link)}</a>"
 
-        content += '</div></div></div>'
+        content += '</div></div>'
 
     return content
 
@@ -55,30 +51,31 @@ review_in: 3 months
 
 # <%= current_page.data.title %>
 
-Listing of our repositories, who owns them and what they are dependent on.
-
-
-<div class='no-owners moj-banner moj-banner--warning'>
-    <div class='moj-banner__message'>
-        <h2 class=''>REPOSITORIES WITHOUT OWNERS</h2>
-        <p>List of all the repostories that we own but do not have a team looking after.</p>
+<p>Listing of our repositories, who owns them and what they are dependent on.</p>
+<div class='no-owners opg-warning'>
+    <h2 id='repositories-without-owners'>REPOSITORIES WITHOUT OWNERS</h2>
+    <p>List of all the repostories that we own but do not have a team looking after.</p>
+    <div class='opg-tag-list'>
         $noOwners
-    </dv>
-<div>
-
-
-<div class=''>
-## Team Ownership
-List of our service teams and what repositories and dependancies they require
-<div>
-$serviceTeamData
+    </div>
 </div>
+<div class='team-ownership'>
+    <h2 id='team-ownership'>Team Ownership</h2>
+    <p>List of our service teams and things they own and require.</p>
+    <div>
+        $serviceTeamData
+    </div>
 </div>
-
-#### Notes
-
-This was generated via [this script](https://github.com/ministryofjustice/opg-repository-reporting/blob/main/owners.py).
-
+<div>
+    <h2 id='generating-ownership'>Generating Ownership and Dependency Data</h2>
+    <p>Ownership and dependency data in this report is generated from a valid metadata.json file in the root of the repository filesystem on the default branch.</p>
+    <p>This metadata file is based on <a href='https://github.com/ministryofjustice/opg-repository-reporting/blob/main/schema/'>JSON Schema</a>; see <a href='https://github.com/ministryofjustice/opg-lpa/blob/main/metadata.json'>Make an LPA for an example</a>.
+</div>
+<div>
+    <h4 id='notes'>Notes</h4>
+    <p></p>
+    <p>This was generated via <a href='https://github.com/ministryofjustice/opg-repository-reporting/blob/main/owners.py'>this script</a></p>
+</div>
 """
     )
     content = template.substitute(date=now, noOwners=no_owners_html, serviceTeamData=team_html)
