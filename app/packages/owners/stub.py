@@ -22,6 +22,14 @@ def no_owners(repos:list) -> str:
             content += f"<a href='{repo.html_url}' class='{link_secondary_class}'>{repo.name}</a>\n"
     return content
 
+def not_owned_class(link:str, owned:list) -> str:
+    """Return a css class if the repoistory is in the owned list"""
+    return "opg-tag--not-owned " if link not in owned else ""
+
+def not_owned_title(link:str, owned:list) -> str:
+    """Return a title string if the repoistory is in the owned list"""
+    return "(HAS NO OWNER)" if link not in owned else ""
+
 def service_team_repos(teams:list, owned:list, dependents:list) -> str:
     """Generate html for service team and responsibilities"""
     content:str = ""
@@ -32,7 +40,7 @@ def service_team_repos(teams:list, owned:list, dependents:list) -> str:
         for link in owned.get(team, []):
             content += f"<a href='{link}' title='OWNER OF {link_to_name(link)}' class='{link_primary_class}'>{link_to_name(link)}</a>"
         for link in dependents.get(team, []):
-            content += f"<a href='{link}' title='DEPENDS ON {link_to_name(link)}' class='{link_secondary_class}'>{link_to_name(link)}</a>"
+            content += f"<a href='{link}' title='DEPENDS ON {link_to_name(link)} {not_owned_title(link, owned)}' class='{not_owned_class(link, owned)}{link_secondary_class}'>{link_to_name(link)}</a>"
 
         content += '</div></div>'
 
