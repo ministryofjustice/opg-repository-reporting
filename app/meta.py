@@ -1,8 +1,8 @@
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
-from shared import init, RateLimiter, protected_default_branch, Out, timestamp_directory
-from meta import get_args, erb
+from packages import init, RateLimiter, protected_default_branch, Out, timestamp_directory
+from packages.meta import get_args, erb
 
 
 def main():

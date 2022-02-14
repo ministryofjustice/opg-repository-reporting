@@ -1,7 +1,7 @@
 import pandas as pd
 from github import Github, Organization, Team
-from shared import init, Dependencies, RateLimiter, Out, timestamp_directory
-from software_packages import get_args, erb
+from packages import init, Dependencies, RateLimiter, Out, timestamp_directory
+from packages.software_packages import get_args, erb
 
 def main():
     """Main function"""

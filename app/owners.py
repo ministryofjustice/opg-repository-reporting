@@ -1,68 +1,51 @@
-from github.Repository import Repository
-import pandas as pd
-from github.MainClass import Github
-from github.Organization import Organization
-from github.Team import Team
-from shared.github_extensions.init import init
-from shared.github_extensions.rate_limiter import RateLimiter
-from shared.github_extensions.teams import teams_to_string
-from shared.logger.out import Out
-from shared.folder import timestamp_directory
-from owners.args import get_args
-from owners.stub import erb
+from github import Github, Team
+from packages import init, RateLimiter, Out, repositories, has_metafiles, Ownership, metadata, Schema, no_owners, service_team_repos, timestamp_directory
+from packages.owners import get_args
+from packages.owners import erb
+
+
 
 def main():
     """Main function"""
-    path = timestamp_directory("owners")
     args = get_args()
-
-    Out.log("Repository ownership and meta data")
+    Out.log("Repository ownership and dependency data")
+    
     g:Github
-    org:Organization
-    team:Team
-    g, org, team = init(args)
-
+    team:Team.Team
+    g, _ , team = init(args)
     RateLimiter.CONNECTION = g
-    RateLimiter.check()
 
-    repos = team.get_repos()
-    i = 0
-    t = repos.totalCount
+    # fetch all repos, but use metadata file filter to find those with and without a metadata file
+    # - those without are considered to not have an owner
+    all_repos, owned_repos, unowned_repos, archived_repos = repositories(team, has_metafiles)
 
-    all = []
-    r:Repository
-    for r in repos:
-        i = i + 1
-        Out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
-        RateLimiter.check()
-        row = {
-                'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
-                'Archived?': "Yes" if r.archived else "No",
-                'Clone Traffic': r.get_clones_traffic()['count'],
-                'Fork Count': r.forks_count,
-                'Default Branch': r.default_branch,
-                'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
-                'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date,
-                'Ownership': teams_to_string(r, args.team_slug, args.exclude)
-            }
-        Out.log(f"Repository [{r.full_name}] archived [{r.archived}] last commit [{row.get('Last Commit Date to Default', None)}]")
-        Out.debug(row)
-        all.append(row)
-        Out.group_end()
+    report_data:Ownership = Ownership()
 
-    Out.group_start("Output")
+    Out.group_start("Finding repositories with valid schema")
+    for repo in owned_repos:        
+        data:dict = metadata(repo)
+        Out.log(f"[{repo.full_name}] Has metadata file")
+        if Schema.valid( data ):
+            Out.log(f"[{repo.full_name}] Has valid schema")
+            report_data.add(repo, data)
+  
+    Out.group_end()
 
-    all = sorted(all, key=lambda p: p['Repository'])
-    df = pd.DataFrame(all)
-    df.to_markdown(f"{path}/report.md", index=False)
-    df.to_html(f"{path}/report.html", index=False, border=0)
+    no_owner_html:str = no_owners(unowned_repos)
+    service_teams_html:str = service_team_repos(report_data.owners, report_data.owner_repositories, report_data.owner_dependencies)
 
-    Out.log("Generating ERB file")
-    erb(path, f"{path}/report.html")
+    path = timestamp_directory("owners")
+    erb(path, no_owner_html, service_teams_html)
+    
+    Out.group_start("Summary")
+    Out.log(f"[{len(all_repos)}] Total repositories. [{len(owned_repos)}] Owned repositories. [{len(unowned_repos)}] Unowned repositories. [{len(archived_repos)}] Archived repositories.")
+    Out.group_end()
 
     Out.log(f"Generated reports here [{path}]")
     Out.set_var("directory", path)
     Out.group_end()
+
+
 
 if __name__ == "__main__":
     main()

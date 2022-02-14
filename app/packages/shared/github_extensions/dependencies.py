@@ -4,7 +4,7 @@ from github.Repository import Repository
 from pprint import pp
 from string import Template
 import requests
-from shared.logger.out import Out
+from ..logger.out import Out
 
 
 class Dependencies:

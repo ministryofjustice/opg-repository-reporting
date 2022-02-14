@@ -1,11 +1,7 @@
 import pandas as pd
-from github.MainClass import Github
-from github.Organization import Organization
-from github.Repository import Repository
-from github.Team import Team
-
-from shared import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, Out, timestamp_directory
-from releases import get_args, erb
+from github import Github, Organization, Repository, Team
+from packages import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, Out, timestamp_directory
+from packages.releases import get_args, erb
 
 def main():
     """Main function"""
@@ -15,8 +11,8 @@ def main():
 
     Out.log(f"Releases between [{args.start}] and [{args.end}] filtered by [{args.filter}]")
     g:Github
-    org:Organization
-    team:Team
+    org:Organization.Organization
+    team:Team.Team
     g, org, team = init(args)
 
     RateLimiter.CONNECTION = g
