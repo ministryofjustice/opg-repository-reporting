@@ -52,7 +52,7 @@ def erb(report_dir:str, no_owners_html:str, team_html:str ) -> None:
 
     template = Template(
         """---
-title: Ownership
+title: Team Metadata
 last_reviewed_on: $date
 review_in: 3 months
 ---
@@ -60,23 +60,22 @@ review_in: 3 months
 # <%= current_page.data.title %>
 
 <p>Listing of our repositories, who owns them and what they are dependent on.</p>
-<div class='no-owners opg-warning'>
-    <h2 id='repositories-without-owners'>REPOSITORIES WITHOUT OWNERS</h2>
-    <p>List of all the repostories that we own but do not have a team looking after.</p>
+<div class='no-metadata opg-warning'>
+    <h2 id='repositories-without-metadata'>REPOSITORIES WITHOUT METADATA</h2>
+    <p>List of all the repostories that do not have a metadata.json file in their root.</p>
     <div class='opg-tag-list'>
         $noOwners
     </div>
 </div>
-<div class='team-ownership'>
-    <h2 id='team-ownership'>Team Ownership</h2>
-    <p>List of our service teams and things they own and require.</p>
+<div class='teams'>
+    <h2 id='teams'>Teams</h2>    
     <div>
         $serviceTeamData
     </div>
 </div>
 <div>
-    <h2 id='generating-ownership'>Generating Ownership and Dependency Data</h2>
-    <p>Ownership and dependency data in this report is generated from a valid metadata.json file in the root of the repository filesystem on the default branch.</p>
+    <h2 id='generating-metadata'>Generating Metadata</h2>
+    <p>Data in this report is generated from a valid metadata.json file in the root of the repository filesystem on the default branch.</p>
     <p>This metadata file is based on <a href='https://github.com/ministryofjustice/opg-repository-reporting/blob/main/schema/'>JSON Schema</a>; see <a href='https://github.com/ministryofjustice/opg-lpa/blob/main/metadata.json'>Make an LPA for an example</a>.
 </div>
 <div>
