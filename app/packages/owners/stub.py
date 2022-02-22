@@ -11,6 +11,7 @@ link_primary_class:str = "opg-tag opg-tag--owner govuk-tag"
 
 def link_to_name(link:str) -> str:
     """Convert a typical github repo link to a short hand name"""
+    link = link.rstrip('/')
     return link[link.rfind('/')+1:]
 
 def no_owners(repos:list) -> str:
