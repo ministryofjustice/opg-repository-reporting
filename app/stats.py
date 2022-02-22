@@ -1,16 +1,16 @@
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
-from packages import init, RateLimiter, protected_default_branch, Out, timestamp_directory
-from packages.meta import get_args, erb
+from packages import init, RateLimiter, protected_default_branch, Out, timestamp_directory, has_codeowners
+from packages.stats import get_args, erb
 
 
 def main():
     """ Main function """
-    path = timestamp_directory("meta")
+    path = timestamp_directory("stats")
     args = get_args()
 
-    Out.log("Repository meta data")
+    Out.log("Repository stats data")
     g:Github
     org:Organization.Organization
     team:Team.Team
@@ -35,6 +35,7 @@ def main():
                 'Default Branch': r.default_branch,
                 'Default Branch Protection?': "Yes" if protected_default_branch(r) else "No",
                 'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
+                'Has CODEOWNERS?': "Yes" if has_codeowners(r) else "No",
                 'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
                 'Clone Traffic': r.get_clones_traffic()['count'],
                 'Fork Count': r.forks_count,
