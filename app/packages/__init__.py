@@ -1,4 +1,4 @@
-from .meta import *
+from .stats import *
 from .owners import *
 from .releases import *
 from .shared import *

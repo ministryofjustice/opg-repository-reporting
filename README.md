@@ -34,17 +34,17 @@ Typically, you will want to run a command like this:
 This will create a markdown file containing a list of repositories, their associated teams and some meta data (like last commit date).
 
 
-## Meta Report
+## Stats Report
 
 Generate a report of all accessible repositories containing commit dates, default branches and similar data.
 
-Found at `./meta.py`
+Found at `./stats.py`
 
 ### Usage
 
 Typically, you will want to run a command like this:
 
-```python ./meta.py --organisation-token ${GITHUB_TOKEN} ```
+```python ./stats.py --organisation-token ${GITHUB_TOKEN} ```
 
 This will create a markdown file.
 
