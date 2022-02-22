@@ -1,7 +1,6 @@
 from github import Github, Team
 from packages import init, RateLimiter, Out, repositories, has_metafiles, Ownership, metadata, Schema, no_owners, service_team_repos, timestamp_directory
-from packages.owners import get_args
-from packages.owners import erb
+from packages.team_metadata import get_args, erb
 
 
 
@@ -34,7 +33,7 @@ def main():
     no_owner_html:str = no_owners(unowned_repos)
     service_teams_html:str = service_team_repos(report_data.owners, report_data.owner_repositories, report_data.owner_dependencies)
 
-    path = timestamp_directory("owners")
+    path = timestamp_directory("team_metadata")
     erb(path, no_owner_html, service_teams_html)
     
     Out.group_start("Summary")

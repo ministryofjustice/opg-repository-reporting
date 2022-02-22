@@ -19,17 +19,17 @@ Typically, you will want to run a command like this:
 This will create report for the last 6 months for the `ministry of justice` github organisation, limited to the `opg` teams repositories and output the information as markdown.
 
 
-## Ownership Report
+## Team Metadata Report
 
 Generate a report of what teams own which repositories based on root organization and team.
 
-Found at `./owners.py`
+Found at `./team_metadata.py`
 
 ### Usage
 
 Typically, you will want to run a command like this:
 
-```python ./owners.py --organisation-token ${GITHUB_TOKEN} ```
+```python ./team_metadata.py --organisation-token ${GITHUB_TOKEN} ```
 
 This will create a markdown file containing a list of repositories, their associated teams and some meta data (like last commit date).
 
