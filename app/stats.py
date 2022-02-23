@@ -1,7 +1,7 @@
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
-from packages import init, RateLimiter, protected_default_branch, Out, timestamp_directory, has_codeowners
+from packages import init, RateLimiter, protected_default_branch, Out, timestamp_directory, check_standard_files
 from packages.stats import get_args, erb
 
 
@@ -29,18 +29,27 @@ def main():
         i = i + 1
         Out.group_start(f"[{i}/{t}] Repository [{r.full_name}]")
         RateLimiter.check()
+        
         row = {
-                'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
-                'Archived?': "Yes" if r.archived else "No",
-                'Default Branch': r.default_branch,
-                'Default Branch Protection?': "Yes" if protected_default_branch(r) else "No",
-                'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
-                'Has CODEOWNERS?': "Yes" if has_codeowners(r) else "No",
-                'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
-                'Clone Traffic': r.get_clones_traffic()['count'],
-                'Fork Count': r.forks_count,
-                'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date
+            'Repository': f"<a href='{r.html_url}'>{r.full_name}</a>",
+            'Archived?': "Yes" if r.archived else "No",
+            'Default Branch': r.default_branch,
+            'Default Branch Protection?': "Yes" if protected_default_branch(r) else "No",
             }
+        # get standard file checks (readme etc) add those in to the stats
+        standard_files = check_standard_files(r)
+        for name,exists in standard_files.items():
+            row.update({f"Has {name}?": "Yes" if exists == True else "No"})
+
+        row.update({
+            'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
+            'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
+            'Clone Traffic': r.get_clones_traffic()['count'],
+            'Fork Count': r.forks_count,
+            'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date
+
+        })
+
         Out.log(f"Repository [{r.full_name}] archived [{r.archived}] last commit [{row.get('Last Commit Date to Default', None)}]")
         Out.debug(row)
         all.append(row)
