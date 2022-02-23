@@ -12,14 +12,14 @@ def erb(report_dir:str, report_file_path:str) -> None:
 
     template = Template(
         """---
-title: Meta
+title: Repository Stats
 last_reviewed_on: $date
 review_in: 3 months
 ---
 
 # <%= current_page.data.title %>
 
-Listing of all our repositories and meta data.
+Listing of all our repositories and stats about them.
 
 <div>
 $table
