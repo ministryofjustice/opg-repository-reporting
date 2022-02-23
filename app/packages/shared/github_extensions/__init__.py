@@ -5,5 +5,4 @@ from .teams import *
 from .init import *
 from .branch_protection import *
 from .repositories import *
-from .metafiles import *
-from .codeowners import *
+from .files import *
