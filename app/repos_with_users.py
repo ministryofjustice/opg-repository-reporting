@@ -150,7 +150,7 @@ def main():
     Out.log(f"[{len(repos_with_unknown_users)}] REPOS WITH UNKNOWN USERS TO CHECK")
     for check in repos_with_unknown_users:
         Out.log(f"{check}")
-    Out.log(f"[{len(repos_with_unknown_teams)}] REPOS WITH UNKNOWN TEAMS TO CHECK")
+    Out.log(f"[{len(repos_with_unknown_teams)}] UNKNOWN TEAMS TO CHECK")
     for check in repos_with_unknown_teams:
         Out.log(f"{check}")
         
