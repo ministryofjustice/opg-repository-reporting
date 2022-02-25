@@ -90,7 +90,7 @@ def get_args() -> argparse.Namespace:
 def main():
     """Main function"""
     args = get_args()
-    Out.log("Repositories that have users directly attached to them")
+    Out.log("Repositories with unknown teams / users")
     
     g:Github
     team:Team.Team
