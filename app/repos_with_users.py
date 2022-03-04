@@ -125,11 +125,12 @@ def main():
             # check we know the team name!
             if team.name not in org_teams:
                 repos_with_unknown_teams.append(f"{repo.full_name} - {team.name}")
-                Out.log(f"[{repo.full_name}] has and UNKNOWN TEAM [{team.name}]")
-
-            member:NamedUser.NamedUser
-            for member in team.get_members():
-                members.append(member.login)
+                Out.log(f"[{repo.full_name}] has an UNKNOWN TEAM [{team.name}]")
+            else:
+                # only track the member if we know their team
+                member:NamedUser.NamedUser
+                for member in team.get_members():
+                    members.append(member.login)
         
         # get all the collaborators and compare them to teams
         collaborator:NamedUser.NamedUser
