@@ -39,11 +39,20 @@ def service_team_repos(teams:list, owned:dict, dependents:dict) -> str:
 
     for team in sorted(teams):
         content += f"<div class='opg-team'><h3 id='{team}'>{team}</h3>" \
-                        "<div class='opg-tag-list'>" 
-        for link in owned.get(team, []):
-            content += f"<a href='{link}' title='OWNER OF {link_to_name(link)}' class='{link_primary_class}'>{link_to_name(link)}</a>"
-        for link in dependents.get(team, []):
-            content += f"<a href='{link}' title='DEPENDS ON {link_to_name(link)} {not_owned_title(link, owned)}' class='{not_owned_class(link, owned)}{link_secondary_class}'>{link_to_name(link)}</a>"
+                        "<div class='opg-tag-list'>"
+
+        team_owned = owned.get(team, [])
+        team_deps = dependents.get(team, [])
+
+        for owned_link in team_owned:
+            owned_name = link_to_name(owned_link)
+            content += f"<a href='{owned_link}' title='OWNER OF {owned_name}' class='{link_primary_class}'>{owned_name}</a>"
+        
+        for dependent_link in team_deps:
+            dependent_name = link_to_name(dependent_link)
+            extra_title = not_owned_title(dependent_link, flat_owned)
+            extra_class = not_owned_class(dependent_link, flat_owned)
+            content += f"<a href='{dependent_link}' title='DEPENDS ON {dependent_name} {extra_title}' class='{extra_class}{link_secondary_class}'>{dependent_name}</a>"
 
         content += '</div></div>'
 
