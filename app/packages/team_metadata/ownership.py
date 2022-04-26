@@ -1,5 +1,4 @@
-from github import Repository, Team
-from ..shared import has_metafiles, repositories
+from github import Repository
 
 class Ownership:
     """Class to handle ..."""
