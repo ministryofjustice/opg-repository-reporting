@@ -1,5 +1,4 @@
-from github import Repository, Team
-from ..shared import has_metafiles, repositories
+from github import Repository
 
 class Ownership:
     """Class to handle ..."""
@@ -24,14 +23,16 @@ class Ownership:
         for owner in metadata.get("owners", []):
             owned = self.owner_repositories.get(owner, [])
             owned.append(repository.html_url)
-            self.owner_repositories[owner] = owned
+            # unique list
+            self.owner_repositories[owner] = list(set(owned))
     
     def update_owned_dependencies(self, metadata:dict) -> None:
         """Update dependencies"""
         for owner in metadata.get("owners", []):
-            owned = self.owner_dependencies.get(owner, [])
-            owned.extend( metadata.get("dependencies", []) )
-            self.owner_dependencies[owner] = owned
+            deps = self.owner_dependencies.get(owner, [])
+            deps.extend( metadata.get("dependencies", []) )
+            deps = list(set(deps))
+            self.owner_dependencies[owner] = deps
 
 
     def add(self, repository:Repository.Repository, metadata:dict) -> None:
