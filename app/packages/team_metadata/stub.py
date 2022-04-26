@@ -34,11 +34,10 @@ def not_owned_title(link:str, owned:list) -> str:
 def service_team_repos(teams:list, owned:dict, dependents:dict) -> str:
     """Generate html for service team and responsibilities"""
     content:str = ""
-    
-    for team in teams:
     # owned is a dict with a list at each key, get the values and flattern
     flat_owned = sorted({x for v in owned.values() for x in v})
 
+    for team in sorted(teams):
         content += f"<div class='opg-team'><h3 id='{team}'>{team}</h3>" \
                         "<div class='opg-tag-list'>" 
         for link in owned.get(team, []):
