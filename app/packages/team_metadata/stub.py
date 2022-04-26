@@ -36,6 +36,9 @@ def service_team_repos(teams:list, owned:dict, dependents:dict) -> str:
     content:str = ""
     
     for team in teams:
+    # owned is a dict with a list at each key, get the values and flattern
+    flat_owned = sorted({x for v in owned.values() for x in v})
+
         content += f"<div class='opg-team'><h3 id='{team}'>{team}</h3>" \
                         "<div class='opg-tag-list'>" 
         for link in owned.get(team, []):
