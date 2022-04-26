@@ -31,7 +31,7 @@ def not_owned_title(link:str, owned:list) -> str:
     """Return a title string if the repoistory is in the owned list"""
     return "(HAS NO OWNER)" if link not in owned else ""
 
-def service_team_repos(teams:list, owned:list, dependents:list) -> str:
+def service_team_repos(teams:list, owned:dict, dependents:dict) -> str:
     """Generate html for service team and responsibilities"""
     content:str = ""
     
