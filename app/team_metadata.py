@@ -21,7 +21,7 @@ def main():
     report_data:Ownership = Ownership()
 
     Out.group_start("Finding repositories with valid schema")
-    for repo in owned_repos:        
+    for repo in owned_repos:
         data:dict = metadata(repo)
         Out.log(f"[{repo.full_name}] Has metadata file")
         if Schema.valid( data ):
