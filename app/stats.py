@@ -1,3 +1,4 @@
+from itertools import count
 import pandas as pd
 
 from github import Github, Organization, Team, Repository
@@ -39,14 +40,15 @@ def main():
         # get standard file checks (readme etc) add those in to the stats
         standard_files = check_standard_files(r)
         for name,exists in standard_files.items():
-            row.update({f"Has {name}?": "Yes" if exists == True else "No"})
+            row.update({f"Has {name}?": "Yes" if exists is True else "No"})
 
         row.update({
             'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
             'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
             'Clone Traffic': r.get_clones_traffic()['count'],
             'Fork Count': r.forks_count,
-            'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date
+            'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date,
+            'Has Webhooks?': "Yes" if r.get_hooks().totalCount > 0 else "No"
 
         })
 
