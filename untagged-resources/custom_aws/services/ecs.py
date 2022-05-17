@@ -27,7 +27,7 @@ class ServiceEcs(ServiceBase):
         """
         untagged = []
         
-        session = aioboto3.Session(region_name=region_name)        
+        session = aioboto3.Session(region_name=region_name)
         async with session.client(self.client_type, region_name=region_name) as client:
             # get cluster arns
             cluster_arns = await self._list.get('clusters').call(client)
@@ -67,10 +67,10 @@ class ServiceEcs(ServiceBase):
                     
         return untagged
 
-    async def all(self, region_name:str) -> list:
+    async def all(self, region_name:str) -> dict:
         """Return all the arns of all resources in the ec2 scope that don't contain tags"""
-        arns = await self.get_all_untagged(region_name)
+        untagged = await self.get_all_untagged(region_name)
 
-        return arns
+        return {'untagged': untagged, 'all': self.arns}
 
     

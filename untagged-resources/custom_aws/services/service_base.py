@@ -1,6 +1,5 @@
 class ServiceBase:
     """Base class for AWS service calls"""
-    region_name:str = ""
     arns: list = []
 
     def _untagged(self, dataset:list, id_key:str, tag_key:str = 'tags') -> list:
@@ -14,7 +13,7 @@ class ServiceBase:
 
 
 
-    async def all(self, region_name:str) -> list:
+    async def all(self, region_name:str) -> dict:
         """Return a list of all data from this service"""
-        self.region_name = region_name
-        return []
+
+        return {}
