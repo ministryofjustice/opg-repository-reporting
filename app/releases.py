@@ -1,3 +1,4 @@
+from platform import release
 import pandas as pd
 from github import Github, Organization, Repository, Team
 from packages import init, counters_for_date_range, pull_requests_in_date_counters, RateLimiter, Out, timestamp_directory
@@ -23,6 +24,13 @@ def main():
     t = repos.totalCount
 
     all_releases = []
+
+    #totals
+    totals:dict = counters_for_date_range(
+                    args.start,
+                    args.end,
+                    {'Repository':"TOTALS"} )
+
     r:Repository
     for r in repos:
         i = i + 1
@@ -41,6 +49,10 @@ def main():
                 releases = pull_requests_in_date_counters(r, args.start, args.end, releases, b)
 
             Out.debug(releases)
+            # update totals counter, the preset dict should contain 0s when not present
+            for month in totals:
+                if month != "Repository":
+                    totals[month] = totals.get(month) + releases.get(month)
 
             all_releases.append(releases)
         Out.group_end()
@@ -48,6 +60,7 @@ def main():
     Out.group_start("Output")
 
     all_releases = sorted(all_releases, key=lambda p: p['Repository'])
+    all_releases.append(totals)
 
     df = pd.DataFrame(all_releases)
     df.to_markdown(f"{path}/report.md", index=False)
