@@ -1,8 +1,6 @@
+import asyncio
 from process_args import process_args
 from custom_aws import service_list, ServiceClasses
-from pprint import pprint
-import asyncio
-
 
 
 async def main():
