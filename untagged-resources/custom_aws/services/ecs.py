@@ -20,25 +20,27 @@ class ServiceEcs(ServiceBase):
 
 
 
-    async def get_all_untagged(self, region_name:str) -> list:
+    async def get_all(self, region_name:str) -> dict:
         """
         Find all things, ecs uses nesting, so this is harder.
         Does cluster -> service -> task
         """
         untagged = []
-        
+        all_resources = []
+
         session = aioboto3.Session(region_name=region_name)
         async with session.client(self.client_type, region_name=region_name) as client:
             # get cluster arns
             cluster_arns = await self._list.get('clusters').call(client)
-            self.arns.extend(cluster_arns)
+            all_resources.extend(cluster_arns)
             # get cluster info for each arn, including the tags
             cluster_details = await self._describe.get('clusters').call(client, **{"clusters":cluster_arns})
             
             # append any untagged clusters to the list
-            untagged.extend(
-                self._untagged(cluster_details, "clusterArn")
-            )
+            untagged_clusters = self._untagged(cluster_details, "clusterArn")
+            untagged.extend( untagged_clusters )
+            
+            print(f"\t - [list_clusters]\n\t\t All: [{(len(cluster_arns))}]\t Untagged: [{len(untagged_clusters)}]")
             
             for cluster_arn in cluster_arns:
 
@@ -46,7 +48,7 @@ class ServiceEcs(ServiceBase):
                     # get list of 'item'
                     lister = self._list.get(item)
                     arns = await lister.call(client, cluster=cluster_arn)
-                    self.arns.extend(arns)
+                    all_resources.extend(arns)                    
                     
                     # describe each of the items to get their tags
                     describer = self._describe.get(item)
@@ -57,20 +59,19 @@ class ServiceEcs(ServiceBase):
                     }
                     details = await describer.call(client, **args)
                     # merge the arns to the main list
-                    self.arns.extend(
+                    all_resources.extend(
                         [d.get(describer.id_key) for d in details]
                     )
                     # find untagged
-                    untagged.extend(
-                        self._untagged(details, describer.id_key)
-                    )
+                    no_tags = self._untagged(details, describer.id_key)
+                    untagged.extend(no_tags)
+                    print(f"\t - [list_{item}]\n\t\t All: [{(len(arns))}]\t Untagged: [{len(no_tags)}]")
                     
-        return untagged
+        return {'untagged': untagged, 'all': all_resources}
 
     async def all(self, region_name:str) -> dict:
         """Return all the arns of all resources in the ec2 scope that don't contain tags"""
-        untagged = await self.get_all_untagged(region_name)
+        return await self.get_all(region_name)
 
-        return {'untagged': untagged, 'all': self.arns}
 
     
