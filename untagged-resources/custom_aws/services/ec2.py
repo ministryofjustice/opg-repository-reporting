@@ -24,6 +24,9 @@ class ServiceEc2(ServiceBase):
         'route_tables': ApiCaller('describe_route_tables', 'RouteTables', 'RouteTableId'),
         'security_groups': ApiCaller('describe_security_groups', 'SecurityGroups', 'GroupId'),
         'subnets': ApiCaller('describe_subnets', 'Subnets', 'SubnetId'),
+        'transit_gateways': ApiCaller('describe_transit_gateways', 'TransitGateways', 'TransitGatewayId'),
+        'volumes': ApiCaller('describe_volumes', 'Volumes', 'VolumeId'),
+        'vpcs': ApiCaller('describe_vpcs', 'Vpcs', 'VpcId'),
     }
     _kwargs:dict = {
         'images': {'Owners': ['self']}
