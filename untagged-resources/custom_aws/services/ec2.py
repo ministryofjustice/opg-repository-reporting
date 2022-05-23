@@ -19,7 +19,11 @@ class ServiceEc2(ServiceBase):
         'local_gateways': ApiCaller('describe_local_gateways', 'LocalGateways', 'LocalGatewayId'),
         'nat_gateways': ApiCaller('describe_nat_gateways', 'NatGateways', 'NatGatewayId'),
         'network_acls': ApiCaller('describe_network_acls', 'NetworkAcls', 'NetworkAclId'),
-        'network_interfaces': ApiCaller('describe_network_interfaces', 'NetworkInterfaces', 'NetworkInterfaceId'),        
+        'network_interfaces': ApiCaller('describe_network_interfaces', 'NetworkInterfaces', 'NetworkInterfaceId'),
+        'reserved_instances': ApiCaller('describe_reserved_instances', 'ReservedInstances', 'ReservedInstancesId'),
+        'route_tables': ApiCaller('describe_route_tables', 'RouteTables', 'RouteTableId'),
+        'security_groups': ApiCaller('describe_security_groups', 'SecurityGroups', 'GroupId'),
+        'subnets': ApiCaller('describe_subnets', 'Subnets', 'SubnetId'),
     }
     _kwargs:dict = {
         'images': {'Owners': ['self']}
