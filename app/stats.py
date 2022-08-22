@@ -40,12 +40,8 @@ def main():
         # get standard file checks (readme etc) add those in to the stats
         standard_files = check_standard_files(r)
         for name,exists in standard_files.items():
-            try:
-                row.update({f"Has {name}?": "Yes" if exists is True else "No"})
-            except GithubException as thrown_exception:
-                print(f" Failed {name}")
-                print(thrown_exception)
-
+            row.update({f"Has {name}?": "Yes" if exists is True else "No"})
+            
         # handle each of the extra data fields
         vulnerability_alerts = r.get_vulnerability_alert()
         pulls = r.get_pulls(state='open', sort='created', base=r.default_branch)    
