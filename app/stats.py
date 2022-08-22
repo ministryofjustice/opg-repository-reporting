@@ -56,15 +56,13 @@ def main():
             print(f" Failed to get CLONE TRAFFIC data for {r.full_name}")
             print(thrown_exception)
         
-
         row.update({
+            'Has WEBHOOKS?': "Yes" if hooks.totalCount > 0 else "No",
             'Vulnerability Alerts Enabled?': "Yes" if vulnerability_alerts else "No",
             'Open Pull Requests': pulls.totalCount,
             'Clone Traffic': clone_traffic,
             'Fork Count': r.forks_count,
-            'Last Commit Date to Default': commit_date,
-            'Has Webhooks?': "Yes" if hooks.totalCount > 0 else "No"
-
+            'Last Commit Date to Default': commit_date
         })
 
         Out.log(f"Repository [{r.full_name}] archived [{r.archived}] last commit [{row.get('Last Commit Date to Default', None)}]")
