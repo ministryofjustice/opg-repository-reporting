@@ -1,7 +1,7 @@
 from itertools import count
 import pandas as pd
 
-from github import Github, Organization, Team, Repository
+from github import Github, Organization, Team, Repository, GithubException
 from packages import init, RateLimiter, protected_default_branch, Out, timestamp_directory, check_standard_files
 from packages.stats import get_args, erb
 
@@ -40,15 +40,34 @@ def main():
         # get standard file checks (readme etc) add those in to the stats
         standard_files = check_standard_files(r)
         for name,exists in standard_files.items():
-            row.update({f"Has {name}?": "Yes" if exists is True else "No"})
+            try:
+                row.update({f"Has {name}?": "Yes" if exists is True else "No"})
+            except GithubException as thrown_exception:
+                print(f" Failed {name}")
+                print(thrown_exception)
+
+        # handle each of the extra data fields
+        vulnerability_alerts = r.get_vulnerability_alert()
+        pulls = r.get_pulls(state='open', sort='created', base=r.default_branch)    
+        commit_date = r.get_branch(r.default_branch).commit.commit.committer.date
+        hooks = r.get_hooks()
+
+        # this seems to fail on permissions
+        try:
+            clone_traffic = r.get_clones_traffic()['count']
+        except GithubException as thrown_exception:
+            clone_traffic = 'UnableToRetrive'
+            print(f" Failed to get CLONE TRAFFIC data for {r.full_name}")
+            print(thrown_exception)
+        
 
         row.update({
-            'Vulnerability Alerts Enabled?': "Yes" if r.get_vulnerability_alert() else "No",
-            'Open Pull Requests': r.get_pulls(state='open', sort='created', base=r.default_branch).totalCount,
-            'Clone Traffic': r.get_clones_traffic()['count'],
+            'Vulnerability Alerts Enabled?': "Yes" if vulnerability_alerts else "No",
+            'Open Pull Requests': pulls.totalCount,
+            'Clone Traffic': clone_traffic,
             'Fork Count': r.forks_count,
-            'Last Commit Date to Default': r.get_branch(r.default_branch).commit.commit.committer.date,
-            'Has Webhooks?': "Yes" if r.get_hooks().totalCount > 0 else "No"
+            'Last Commit Date to Default': commit_date,
+            'Has Webhooks?': "Yes" if hooks.totalCount > 0 else "No"
 
         })
 
