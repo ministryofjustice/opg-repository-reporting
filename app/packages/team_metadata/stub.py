@@ -82,6 +82,9 @@ def service_team_repos(teams:list, owned:dict, dependents:dict) -> str:
             content += f"<a href='{owned_link}' title='CO-OWNER OF {owned_name} WITH {', '.join(coowners)}' class='{link_primary_class} {extra_class}'>{owned_name}</a>"
 
         for dependent_link in team_deps:
+            if (dependent_link in team_solo_owned or dependent_link in team_co_owned):
+                continue
+
             dependent_name = link_to_name(dependent_link)
             extra_title = not_owned_title(dependent_link, flat_owned)
             extra_class = not_owned_class(dependent_link, flat_owned)
