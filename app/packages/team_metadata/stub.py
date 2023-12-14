@@ -27,6 +27,10 @@ def not_owned_class(link:str, owned:list) -> str:
     """Return a css class if the repoistory is in the owned list"""
     return "opg-tag--not-owned " if link not in owned else ""
 
+def co_owned_class() -> str:
+    """Return a css class if the repoistory is co-owned"""
+    return "opg-tag--co-owner "
+
 def not_owned_title(link:str, owned:list) -> str:
     """Return a title string if the repoistory is in the owned list"""
     return "(HAS NO OWNER)" if link not in owned else ""
@@ -38,16 +42,45 @@ def service_team_repos(teams:list, owned:dict, dependents:dict) -> str:
     flat_owned = sorted({x for v in owned.values() for x in v})
 
     for team in sorted(teams):
-        content += f"<div class='opg-team'><h3 id='{team}'>{team}</h3>" \
-                        "<div class='opg-tag-list'>"
+        content += (
+            f"<div class='opg-team'><h3 id='{team}'>{team}</h3>"
+            "<div class='opg-tag-list'>"
+        )
 
         team_owned = owned.get(team, [])
         team_deps = dependents.get(team, [])
 
+        team_solo_owned = []
+        team_co_owned = []
+
         for owned_link in team_owned:
+            is_co_owned = False
+
+            for other_team in teams:
+                if team != other_team and owned_link in owned.get(other_team):
+                    is_co_owned = True
+                    break
+
+            if is_co_owned:
+                team_co_owned.append(owned_link)
+            else:
+                team_solo_owned.append(owned_link)
+
+        for owned_link in team_solo_owned:
             owned_name = link_to_name(owned_link)
             content += f"<a href='{owned_link}' title='OWNER OF {owned_name}' class='{link_primary_class}'>{owned_name}</a>"
-        
+
+        for owned_link in team_co_owned:
+            coowners = []
+
+            for other_team in teams:
+                if team != other_team and owned_link in owned.get(other_team):
+                    coowners.append(other_team)
+
+            owned_name = link_to_name(owned_link)
+            extra_class = co_owned_class()
+            content += f"<a href='{owned_link}' title='CO-OWNER OF {owned_name} WITH {', '.join(coowners)}' class='{link_primary_class} {extra_class}'>{owned_name}</a>"
+
         for dependent_link in team_deps:
             dependent_name = link_to_name(dependent_link)
             extra_title = not_owned_title(dependent_link, flat_owned)
@@ -80,7 +113,7 @@ review_in: 3 months
     </div>
 </div>
 <div class='teams'>
-    <h2 id='teams'>Teams</h2>    
+    <h2 id='teams'>Teams</h2>
     <div>
         $serviceTeamData
     </div>
